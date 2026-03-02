@@ -16,7 +16,7 @@ import darjelling from "../assets/Gallery/darjelling.jpg";
 
 import { useState } from "react";
 
-
+import Swal from "sweetalert2";
 
 const trips = [
   {
@@ -137,7 +137,68 @@ const trips = [
 
 const TripDetails = () => {
   const { slug } = useParams();
-    const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(false)
+  // const [showForm, setShowForm] = useState({
+  //     fullName: "",
+  //     email: "",
+  //     phone: "",
+  //     arrivalDate: "",
+  //     adults: 1,
+  //     children: 0,
+  //     requests: "",
+  //     });
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const form = e.currentTarget;
+
+  const fullName = (form.elements.namedItem("fullName") as HTMLInputElement).value;
+  const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+  const phone = (form.elements.namedItem("phone") as HTMLInputElement).value;
+  const date = (form.elements.namedItem("arrivalDate") as HTMLInputElement).value;
+  const adults = (form.elements.namedItem("adults") as HTMLInputElement).value;
+
+  // Basic validations
+  if (!fullName || !email || !phone || !date || !adults) {
+    Swal.fire({
+      icon: "error",
+      title: "Missing Information",
+      text: "Please fill all required fields.",
+    });
+    return;
+  }
+
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    Swal.fire({
+      icon: "warning",
+      title: "Invalid Email",
+      text: "Please enter a valid email address.",
+    });
+    return;
+  }
+
+  if (phone.length < 10) {
+    Swal.fire({
+      icon: "warning",
+      title: "Invalid Phone Number",
+      text: "Phone number must be at least 10 digits.",
+    });
+    return;
+  }
+
+  
+  Swal.fire({
+    icon: "success",
+    title: "Booking Submitted!",
+    text: `We will contact you soon regarding ${trip.title}.`,
+    confirmButtonColor: "#0f766e",
+  });
+
+  setShowForm(false);
+};
+
+
   const trip = trips.find((t) => t.slug === slug);
   
   if (!trip) {
@@ -217,11 +278,15 @@ const TripDetails = () => {
 
         </div>
       </section>
+
+
+
+      
 {showForm && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-    
-    <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8 relative animate-fade-in">
-      
+
+    <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-8 relative">
+
       {/* Close Button */}
       <button
         onClick={() => setShowForm(false)}
@@ -234,24 +299,58 @@ const TripDetails = () => {
         Book {trip.title}
       </h2>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
+
         <input
           type="text"
           placeholder="Full Name"
+          name="fullName"
           className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
         />
 
         <input
           type="email"
           placeholder="Email Address"
+          name="email"
           className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
         />
 
         <input
           type="tel"
           placeholder="Phone Number"
+          name="phone"
           className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
         />
+
+       <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">
+          Arrival Date
+        </label>
+        <input
+          name="arrivalDate"
+          type="date"
+          min={new Date().toISOString().split("T")[0]}
+          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+        />
+      </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="number"
+            name="adults"
+            placeholder="Adults (12+)"
+            min="1"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+          />
+
+          <input
+            type="number"
+            name="children"
+            placeholder="Children (<12)"
+            min="0"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+          />
+        </div>
 
         <textarea
           placeholder="Special Requests"
@@ -262,8 +361,9 @@ const TripDetails = () => {
           type="submit"
           className="w-full bg-zen-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition"
         >
-          Confirm Booking
+          Submit Booking
         </button>
+
       </form>
     </div>
   </div>
