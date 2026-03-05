@@ -102,6 +102,17 @@ const Footer = () => {
             © {new Date().getFullYear()} ZenHills Tours & Travel — 
             Discover Sikkim, Discover Serenity.
           </p>
+          <p className="text-xs text-primary-foreground/40">
+    Website designed & developed by{" "}
+    <a
+      href="https://yourportfolio.com" //! need to add real portfolio
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-accent hover:underline"
+    >
+      Yesh Raj Bhattarai - Software Devloper
+    </a>
+  </p>
         </div>
 
       </div>
