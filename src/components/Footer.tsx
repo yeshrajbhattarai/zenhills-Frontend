@@ -105,7 +105,7 @@ const Footer = () => {
           <p className="text-xs text-primary-foreground/40">
     Website designed & developed by{" "}
     <a
-      href="https://yourportfolio.com" //! need to add real portfolio
+      href="https://www.linkedin.com/in/yesh-raj-bhattarai-1b1b4a30b/" 
       target="_blank"
       rel="noopener noreferrer"
       className="text-accent hover:underline"

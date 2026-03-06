@@ -12,25 +12,49 @@ interface Enquiry {
   created_at: string;
 }
 
+// ─── PASSWORDS ───────────────────────────────────────────────────────────────
+// Frontend UI password — protects the login screen
 const ADMIN_PASSWORD = "zenhills@chandan2026";
+
+// API key — sent as a header with every request to the backend
+// Must match the ADMIN_KEY environment variable set on PythonAnywhere
+const ADMIN_API_KEY  = "zenhills_admin_k9x2m7p4q8r3n6w1";
 
 function AdminEnquiries() {
   const [authenticated, setAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput]   = useState("");
-  const [showPassword, setShowPassword]     = useState(false);
-  const [passwordError, setPasswordError]   = useState(false);
-  const [shaking, setShaking]               = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [showPassword, setShowPassword]   = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [shaking, setShaking]             = useState(false);
 
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading]     = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
-  // Fetch only after login
+  // Fetch only after login — sends API key header with every request
   useEffect(() => {
     if (!authenticated) return;
-    fetch("https://yeshraj.pythonanywhere.com/api/enquiries/")
-      .then((res) => res.json())
-      .then((data) => { setEnquiries(data); setLoading(false); })
-      .catch((err) => { console.error("Error fetching enquiries:", err); setLoading(false); });
+    setLoading(true);
+    setFetchError(false);
+
+    fetch("https://yeshraj.pythonanywhere.com/api/enquiries/", {
+      headers: {
+        "X-Admin-Key": ADMIN_API_KEY,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setEnquiries(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching enquiries:", err);
+        setFetchError(true);
+        setLoading(false);
+      });
   }, [authenticated]);
 
   const handleLogin = () => {
@@ -49,25 +73,36 @@ function AdminEnquiries() {
     if (e.key === "Enter") handleLogin();
   };
 
-  // ── PASSWORD GATE ──
+  const handleLogout = () => {
+    setAuthenticated(false);
+    setPasswordInput("");
+    setEnquiries([]);
+    setLoading(true);
+    setFetchError(false);
+  };
+
+  // ── PASSWORD GATE ──────────────────────────────────────────────────────────
   if (!authenticated) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="min-h-[80vh] flex items-center justify-center px-4">
-          <div className={`bg-card rounded-2xl shadow-zen-lg p-8 md:p-10 w-full max-w-sm ${shaking ? "animate-[shake_0.4s_ease]" : ""}`}>
-
-            {/* Lock icon */}
+          <div
+            className={`bg-card rounded-2xl shadow-zen-lg p-8 md:p-10 w-full max-w-sm ${
+              shaking ? "animate-[shake_0.4s_ease]" : ""
+            }`}
+          >
             <div className="w-14 h-14 rounded-full bg-zen-gradient flex items-center justify-center mx-auto mb-6">
               <Lock className="w-6 h-6 text-primary-foreground" />
             </div>
 
-            <h2 className="font-display text-2xl font-bold text-foreground text-center mb-1">Admin Access</h2>
+            <h2 className="font-display text-2xl font-bold text-foreground text-center mb-1">
+              Admin Access
+            </h2>
             <p className="font-body text-sm text-muted-foreground text-center mb-8">
               Enter your password to view enquiries.
             </p>
 
-            {/* Password input */}
             <div className="relative mb-4">
               <input
                 type={showPassword ? "text" : "password"}
@@ -109,7 +144,7 @@ function AdminEnquiries() {
     );
   }
 
-  // ── DASHBOARD ──
+  // ── DASHBOARD ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -130,9 +165,8 @@ function AdminEnquiries() {
                 Manage all customer enquiries received from ZenHills website.
               </p>
             </div>
-            {/* Logout button */}
             <button
-              onClick={() => { setAuthenticated(false); setPasswordInput(""); setEnquiries([]); setLoading(true); }}
+              onClick={handleLogout}
               className="flex items-center gap-2 text-sm font-body text-muted-foreground hover:text-red-500 transition-colors border border-border rounded-lg px-4 py-2 hover:border-red-300"
             >
               <LogOut className="w-4 h-4" /> Logout
@@ -148,13 +182,15 @@ function AdminEnquiries() {
             <div className="bg-card rounded-2xl shadow-zen p-6">
               <p className="text-muted-foreground text-sm">Latest Enquiry</p>
               <p className="text-sm mt-2">
-                {enquiries[0] ? new Date(enquiries[0].created_at).toLocaleDateString() : "—"}
+                {enquiries[0]
+                  ? new Date(enquiries[0].created_at).toLocaleDateString()
+                  : "—"}
               </p>
             </div>
             <div className="bg-card rounded-2xl shadow-zen p-6">
               <p className="text-muted-foreground text-sm">System Status</p>
-              <p className="text-green-600 font-semibold mt-2">
-                {loading ? "Loading..." : "Connected"}
+              <p className={`font-semibold mt-2 ${fetchError ? "text-red-500" : "text-green-600"}`}>
+                {loading ? "Loading..." : fetchError ? "Connection Error" : "Connected"}
               </p>
             </div>
           </div>
@@ -162,9 +198,17 @@ function AdminEnquiries() {
           {/* Table */}
           <div className="bg-card rounded-2xl shadow-zen overflow-hidden">
             {loading ? (
-              <div className="p-10 text-center text-muted-foreground">Loading enquiries...</div>
+              <div className="p-10 text-center text-muted-foreground">
+                Loading enquiries...
+              </div>
+            ) : fetchError ? (
+              <div className="p-10 text-center text-red-500">
+                Failed to load enquiries. Check your connection or API status.
+              </div>
             ) : enquiries.length === 0 ? (
-              <div className="p-10 text-center text-muted-foreground">No enquiries found.</div>
+              <div className="p-10 text-center text-muted-foreground">
+                No enquiries found.
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
@@ -179,7 +223,10 @@ function AdminEnquiries() {
                   </thead>
                   <tbody>
                     {enquiries.map((enquiry) => (
-                      <tr key={enquiry.id} className="border-t hover:bg-muted/50 transition duration-200">
+                      <tr
+                        key={enquiry.id}
+                        className="border-t hover:bg-muted/50 transition duration-200"
+                      >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 font-medium">
                             <User className="w-4 h-4 text-primary" />
@@ -188,10 +235,12 @@ function AdminEnquiries() {
                         </td>
                         <td className="px-6 py-4 space-y-1 text-sm">
                           <div className="flex items-center gap-2">
-                            <Mail className="w-4 h-4 text-muted-foreground" />{enquiry.email}
+                            <Mail className="w-4 h-4 text-muted-foreground" />
+                            {enquiry.email}
                           </div>
                           <div className="flex items-center gap-2">
-                            <Phone className="w-4 h-4 text-muted-foreground" />{enquiry.phone}
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                            {enquiry.phone}
                           </div>
                         </td>
                         <td className="px-6 py-4 font-medium">{enquiry.subject}</td>

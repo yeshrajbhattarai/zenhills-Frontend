@@ -104,7 +104,7 @@ const Navbar = () => {
                         ))}
                       </div>
                       <div className="border-t border-border px-4 py-2.5">
-                        <Link to="/#trips" onClick={() => setPackagesOpen(false)} className="text-xs text-primary font-semibold hover:underline">
+                        <Link to="/trips" onClick={() => setPackagesOpen(false)} className="text-xs text-primary font-semibold hover:underline">
                           View All Packages →
                         </Link>
                       </div>

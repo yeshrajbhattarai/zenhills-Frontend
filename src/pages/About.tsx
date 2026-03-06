@@ -1,387 +1,568 @@
-import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+// ─────────────────────────────────────────────────────────────────────────────
+// About.tsx — ZenHills Journeys
+// Design: Editorial luxury travel magazine aesthetic
+// Sections: Hero → Marquee → Story → Philosophy → Gallery → Team* → Testimonials* → CTA
+// * = commented template blocks — fill in & uncomment when ready
+// ─────────────────────────────────────────────────────────────────────────────
+import DeveloperCredit from "../components/DeveloperCredit";
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {
-  MapPin, Calendar, Star, CheckCircle, XCircle,
-  ChevronDown, ChevronUp, Phone
-} from "lucide-react";
-import Swal from "sweetalert2";
-import trips from "../data/trips";
+import { ArrowRight, MapPin, Compass, Shield, Leaf, Users } from "lucide-react";
 
-const sikkimPlaces = [
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const STATS = [
+  { value: "500+", label: "Happy Travellers" },
+  { value: "4.9 ★", label: "Average Rating" },
+  { value: "12+",  label: "Unique Routes" },
+  { value: "5 Yrs", label: "Of Experience" },
+  { value: "4",    label: "Regions of Sikkim" },
+];
+
+const PHILOSOPHIES = [
   {
-    region: "Gangtok",
-    emoji: "🏙️",
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80",
-    spots: ["MG Marg", "Tsomgo Lake", "Nathula Pass", "Baba Mandir"],
+    number: "01",
+    icon: <Compass className="w-5 h-5" />,
+    title: "Authentic Exploration",
+    desc: "We design routes that go beyond tourist checklists — taking you to hidden valleys, monastery courtyards, and sunrise viewpoints that most visitors never find.",
   },
   {
-    region: "North Sikkim",
-    emoji: "🏔️",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
-    spots: ["Lachen – Gurudongmar Lake", "Lachung – Yumthang Valley", "Zero Point"],
+    number: "02",
+    icon: <Shield className="w-5 h-5" />,
+    title: "Unwavering Safety",
+    desc: "Vetted drivers, pre-inspected stays, and on-ground support throughout your trip. Your peace of mind is non-negotiable.",
   },
   {
-    region: "East Sikkim (Silk Route)",
-    emoji: "🛤️",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80",
-    spots: ["Zuluk", "Nathang Valley", "Kupup Lake (Elephant Lake)"],
+    number: "03",
+    icon: <Leaf className="w-5 h-5" />,
+    title: "Responsible Tourism",
+    desc: "We work with local communities, minimise environmental footprint, and ensure that tourism benefits the people and land of Sikkim.",
   },
   {
-    region: "West Sikkim",
-    emoji: "🕌",
-    image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&q=80",
-    spots: ["Pelling – Sky Walk", "Pemayangtse Monastery", "Khecheopalri Lake"],
-  },
-  {
-    region: "South Sikkim",
-    emoji: "🌸",
-    image: "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=600&q=80",
-    spots: ["Ravangla – Buddha Park", "Namchi – Char Dham"],
+    number: "04",
+    icon: <Users className="w-5 h-5" />,
+    title: "Intimate Groups",
+    desc: "Small group sizes mean personal attention, genuine flexibility, and experiences that feel tailored — never mass-produced.",
   },
 ];
 
-const TripDetails = () => {
-  const { slug } = useParams();
-  const trip = trips.find((t) => t.slug === slug);
+// Gallery images: replace src values with your own photography
+const GALLERY = [
+  {
+    src: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=85",
+    alt: "Gangtok aerial view",
+    label: "Gangtok",
+    span: "row-span-2",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85",
+    alt: "North Sikkim mountains",
+    label: "North Sikkim",
+    span: "",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=85",
+    alt: "Silk Route",
+    label: "Silk Route",
+    span: "",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&q=85",
+    alt: "West Sikkim monastery",
+    label: "West Sikkim",
+    span: "col-span-2",
+  },
+];
 
-  const [activePackageIdx, setActivePackageIdx] = useState(0);
-  const [openDays, setOpenDays] = useState<number[]>([0]);
-  const [showForm, setShowForm] = useState(false);
+// ─── MARQUEE STRIP ────────────────────────────────────────────────────────────
+// Infinite scrolling ticker — purely CSS-driven
 
-  if (!trip) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Trip Not Found</h1>
-          <Link to="/" className="text-primary underline">Back to Home</Link>
-        </div>
-      </div>
-    );
-  }
-
-  const pkg = trip.packages[activePackageIdx];
-
-  const toggleDay = (idx: number) => {
-    setOpenDays((prev) =>
-      prev.includes(idx) ? prev.filter((d) => d !== idx) : [...prev, idx]
-    );
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const fullName = (form.elements.namedItem("fullName") as HTMLInputElement).value;
-    const email    = (form.elements.namedItem("email") as HTMLInputElement).value;
-    const phone    = (form.elements.namedItem("phone") as HTMLInputElement).value;
-    const date     = (form.elements.namedItem("arrivalDate") as HTMLInputElement).value;
-    const adults   = (form.elements.namedItem("adults") as HTMLInputElement).value;
-    const children = (form.elements.namedItem("children") as HTMLInputElement).value;
-    const requests = (form.elements.namedItem("special_requests") as HTMLTextAreaElement)?.value || "";
-
-    if (!fullName || !email || !phone || !date || !adults) {
-      Swal.fire({ icon: "error", title: "Missing Information", text: "Please fill all required fields." });
-      return;
-    }
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      Swal.fire({ icon: "warning", title: "Invalid Email", text: "Please enter a valid email." });
-      return;
-    }
-    if (phone.length < 10) {
-      Swal.fire({ icon: "warning", title: "Invalid Phone", text: "Phone must be at least 10 digits." });
-      return;
-    }
-
-    try {
-      const response = await fetch("https://yeshraj.pythonanywhere.com/api/bookings/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          trip_name: `${trip.title} – ${pkg.label}`,
-          full_name: fullName, email, phone,
-          arrival_date: date,
-          adults: Number(adults),
-          children: Number(children),
-          special_requests: requests,
-        }),
-      });
-
-      if (response.ok) {
-        Swal.fire({ icon: "success", title: "Booking Submitted!", text: `We'll contact you soon for ${trip.title}.`, confirmButtonColor: "#0f766e" });
-        setShowForm(false);
-      } else {
-        Swal.fire({ icon: "error", title: "Submission Failed", text: "Something went wrong. Please try again." });
-      }
-    } catch {
-      Swal.fire({ icon: "error", title: "Network Error", text: "Could not connect to server." });
-    }
-  };
+const MarqueeStrip = () => {
+  const items = [
+    "North Sikkim", "Gurudongmar Lake", "Yumthang Valley", "Silk Route",
+    "Zero Point", "Pelling Skywalk", "Tsomgo Lake", "Nathula Pass",
+  ];
+  const repeated = [...items, ...items]; // double for seamless loop
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="overflow-hidden bg-primary py-3 select-none">
+      <div className="flex gap-0 animate-marquee whitespace-nowrap">
+        {repeated.map((item, i) => (
+          <span key={i} className="inline-flex items-center gap-3 px-6 font-body text-xs uppercase tracking-[0.25em] text-primary-foreground/80">
+            <MapPin className="w-3 h-3 opacity-60 flex-shrink-0" />
+            {item}
+          </span>
+        ))}
+      </div>
+
+      {/* Add this to your global CSS / tailwind config if not already present:
+          @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+          .animate-marquee { animation: marquee 28s linear infinite; }
+      */}
+      <style>{`
+        @keyframes marquee-anim {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .animate-marquee { animation: marquee-anim 28s linear infinite; }
+      `}</style>
+    </div>
+  );
+};
+
+// ─── FADE-IN HOOK ─────────────────────────────────────────────────────────────
+
+const useFadeIn = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; } },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+};
+
+const FadeSection = ({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => {
+  const ref = useFadeIn();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{ opacity: 0, transform: "translateY(32px)", transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
+// ─── PAGE ─────────────────────────────────────────────────────────────────────
+
+const About = () => {
+  return (
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
-      {/* ── HERO ── */}
-      <section className="relative h-[55vh] min-h-[400px] flex items-end justify-start overflow-hidden">
-        <img src={trip.image} alt={trip.title} className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <div className="relative z-10 px-6 pb-10 md:px-12 max-w-4xl">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-white/30 flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> {trip.location}
-            </span>
-            <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full border border-white/30 flex items-center gap-1">
-              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" /> {trip.rating}
-            </span>
-          </div>
-          <h1 className="font-display text-3xl md:text-5xl font-bold text-white mb-2">{trip.title}</h1>
-          <p className="text-white/80 font-body text-sm md:text-base max-w-xl">{trip.description}</p>
+      {/* ════════════════════════════════════════════════════════════════
+          HERO — full-bleed cinematic, offset text composition
+      ════════════════════════════════════════════════════════════════ */}
+      <section className="relative h-[92vh] min-h-[560px] flex items-end overflow-hidden">
+        {/* Background image — replace with your hero photo */}
+        <img
+          src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1600&q=90"
+          alt="Sikkim landscape"
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+          style={{ animation: "hero-zoom 12s ease-out forwards" }}
+        />
+
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+        {/* Decorative vertical text */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-3">
+          <div className="w-px h-24 bg-white/20" />
+          <span
+            className="text-white/30 font-body text-[10px] tracking-[0.4em] uppercase"
+            style={{ writingMode: "vertical-rl" }}
+          >
+            Sikkim · India
+          </span>
+          <div className="w-px h-24 bg-white/20" />
         </div>
+
+        {/* Hero text — bottom-left anchored */}
+        <div className="relative z-10 px-6 pb-16 md:px-16 max-w-4xl">
+          <p className="font-body text-xs uppercase tracking-[0.35em] text-white/60 mb-5 flex items-center gap-2">
+            <span className="inline-block w-8 h-px bg-white/40" />
+            Our Story
+          </p>
+
+          <h1
+            className="font-display font-bold text-white leading-[0.9] mb-6"
+            style={{ fontSize: "clamp(3rem, 8vw, 6.5rem)" }}
+          >
+            Where Mountains
+            <br />
+            <span className="italic text-primary/90 font-light">meet wonder.</span>
+          </h1>
+
+          <p className="font-body text-white/70 max-w-md text-base md:text-lg leading-relaxed mb-8">
+            ZenHills Journeys is a homegrown Sikkim travel company built on deep
+            local knowledge, genuine care, and an obsession with authentic
+            mountain experiences.
+          </p>
+
+          <Link
+            to="/trips"
+            className="inline-flex items-center gap-3 bg-white/10 border border-white/25 backdrop-blur-sm text-white px-7 py-3.5 rounded-full font-body font-medium text-sm hover:bg-white/20 transition-all duration-300 group"
+          >
+            Explore Our Trips
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        {/* Hero zoom keyframe */}
+        <style>{`
+          @keyframes hero-zoom {
+            from { transform: scale(1.08); }
+            to   { transform: scale(1); }
+          }
+        `}</style>
       </section>
 
-      <div className="container mx-auto max-w-5xl px-4 py-12">
+      {/* ════════════════════════════════════════════════════════════════
+          MARQUEE STRIP
+      ════════════════════════════════════════════════════════════════ */}
+      <MarqueeStrip />
 
-        {/* ── PACKAGE TABS ── */}
-        <div className="mb-10">
-          <p className="font-body text-sm uppercase tracking-[0.2em] text-primary font-semibold mb-4">Select a Package</p>
-          <div className="flex flex-wrap gap-3">
-            {trip.packages.map((p, idx) => (
-              <button
-                key={p.id}
-                onClick={() => { setActivePackageIdx(idx); setOpenDays([0]); }}
-                className={`px-5 py-2.5 rounded-xl font-body text-sm font-medium border transition-all duration-200 ${
-                  activePackageIdx === idx
-                    ? "bg-zen-gradient text-primary-foreground border-transparent shadow-zen"
-                    : "bg-card text-foreground border-border hover:border-primary hover:text-primary"
-                }`}
-              >
-                {p.label}
-              </button>
+      {/* ════════════════════════════════════════════════════════════════
+          STATS ROW
+      ════════════════════════════════════════════════════════════════ */}
+      <FadeSection className="container mx-auto max-w-5xl px-6 py-16">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-8 text-center">
+          {STATS.map((s, i) => (
+            <FadeSection key={s.label} delay={i * 80}>
+              <p className="font-display text-3xl md:text-4xl font-bold text-primary leading-none mb-1">
+                {s.value}
+              </p>
+              <p className="font-body text-[11px] uppercase tracking-widest text-muted-foreground">
+                {s.label}
+              </p>
+            </FadeSection>
+          ))}
+        </div>
+      </FadeSection>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-5xl px-6">
+        <div className="h-px bg-border" />
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════════
+          OUR STORY — editorial two-column asymmetric layout
+      ════════════════════════════════════════════════════════════════ */}
+      <section className="container mx-auto max-w-5xl px-6 py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+        {/* Image column — overlapping layered composition */}
+        <FadeSection className="lg:col-span-5 relative">
+          {/* Main image — replace with your story photo */}
+          <img
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=85"
+            alt="Mountain landscape"
+            className="rounded-2xl w-full h-[420px] object-cover shadow-zen-lg"
+          />
+          {/* Floating accent card */}
+          <div className="absolute -bottom-6 -right-4 lg:-right-10 bg-card border border-border rounded-xl shadow-zen p-4 max-w-[180px]">
+            <p className="font-display text-2xl font-bold text-primary leading-none mb-1">2019</p>
+            <p className="font-body text-xs text-muted-foreground leading-snug">
+              Founded in the heart of Gangtok
+            </p>
+          </div>
+          {/* Thin decorative border frame */}
+          <div className="absolute -top-4 -left-4 w-32 h-32 border border-primary/20 rounded-xl pointer-events-none" />
+        </FadeSection>
+
+        {/* Text column */}
+        <FadeSection className="lg:col-span-7" delay={120}>
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-4 flex items-center gap-2">
+            <span className="inline-block w-6 h-px bg-primary" />
+            Our Story
+          </p>
+          <h2
+            className="font-display font-bold text-foreground leading-tight mb-6"
+            style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
+          >
+            Born from the mountains,
+            <br />
+            <span className="italic font-light text-muted-foreground">built for wanderers.</span>
+          </h2>
+          <div className="space-y-4 font-body text-muted-foreground leading-relaxed text-[15px]">
+            {/* ── STORY TEXT ──────────────────────────────────────────────────
+                Replace the paragraphs below with your actual brand story.
+                Keep 2–3 paragraphs for best readability.
+            ──────────────────────────────────────────────────────────────── */}
+            <p>
+              ZenHills Journeys was born from a simple frustration — generic tour packages
+              that treated Sikkim like a checkbox rather than an experience. We decided to
+              build something different: a travel company rooted in deep local knowledge
+              and genuine hospitality.
+            </p>
+            <p>
+              What started as guiding friends through hidden trails in North Sikkim grew
+              into a full-fledged company dedicated to authentic, responsible tourism. Today,
+              we craft journeys for families, solo backpackers, honeymooners, and everyone
+              in between — each leaving with stories they'll tell forever.
+            </p>
+            <p>
+              We are not a big agency. We are a small, passionate team that cares deeply
+              about Sikkim's culture, its people, and the mountains that make it magical.
+            </p>
+          </div>
+
+          {/* Signature quote */}
+          <blockquote className="mt-8 pl-5 border-l-2 border-primary/40">
+            <p className="font-display italic text-lg text-foreground/80 leading-snug">
+              {/* ── FOUNDER QUOTE ──────────────────────────────────────────
+                  Replace with a real quote from your team or brand tagline.
+              ─────────────────────────────────────────────────────────── */}
+              "Sikkim is not just a destination — it's a feeling."
+            </p>
+            {/* ── QUOTE ATTRIBUTION ──────────────────────────────────────
+                Uncomment and fill in when ready:
+                <footer className="font-body text-xs text-muted-foreground mt-2 tracking-wide">
+                  — Founder Name, ZenHills Journeys
+                </footer>
+            ─────────────────────────────────────────────────────────── */}
+          </blockquote>
+        </FadeSection>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          PHILOSOPHY — large numbered editorial list
+      ════════════════════════════════════════════════════════════════ */}
+      <section className="bg-foreground/[0.03] border-y border-border py-20">
+        <div className="container mx-auto max-w-5xl px-6">
+
+          <FadeSection className="mb-12">
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-3 flex items-center gap-2">
+              <span className="inline-block w-6 h-px bg-primary" />
+              Our Philosophy
+            </p>
+            <h2
+              className="font-display font-bold text-foreground"
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
+            >
+              What we stand for
+            </h2>
+          </FadeSection>
+
+          <div className="space-y-0 divide-y divide-border">
+            {PHILOSOPHIES.map((item, i) => (
+              <FadeSection key={item.number} delay={i * 80}>
+                <div className="group py-8 grid grid-cols-12 gap-4 items-start hover:bg-primary/[0.03] transition-colors rounded-xl px-4 -mx-4 cursor-default">
+                  {/* Number */}
+                  <span className="col-span-2 md:col-span-1 font-display text-5xl font-bold text-border group-hover:text-primary/30 transition-colors leading-none select-none">
+                    {item.number}
+                  </span>
+                  {/* Icon + Title */}
+                  <div className="col-span-10 md:col-span-3 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                      {item.icon}
+                    </div>
+                    <h3 className="font-display text-lg font-bold text-foreground">
+                      {item.title}
+                    </h3>
+                  </div>
+                  {/* Description */}
+                  <p className="col-span-12 md:col-span-8 font-body text-sm text-muted-foreground leading-relaxed md:pt-1.5">
+                    {item.desc}
+                  </p>
+                </div>
+              </FadeSection>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* ── PACKAGE BODY ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* ════════════════════════════════════════════════════════════════
+          GALLERY GRID — immersive overlapping bento layout
+      ════════════════════════════════════════════════════════════════ */}
+      <section className="container mx-auto max-w-5xl px-6 py-20">
+        <FadeSection className="mb-12">
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-3 flex items-center gap-2">
+            <span className="inline-block w-6 h-px bg-primary" />
+            Explore Sikkim
+          </p>
+          <h2
+            className="font-display font-bold text-foreground"
+            style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
+          >
+            Four regions, one soul.
+          </h2>
+        </FadeSection>
 
-          {/* ── LEFT: Details ── */}
-          <div className="lg:col-span-2 space-y-8">
-
-            {/* Overview */}
-            <div className="bg-card rounded-2xl p-6 shadow-zen">
-              <h2 className="font-display text-xl font-bold text-foreground mb-3">Tour Overview</h2>
-              <p className="font-body text-muted-foreground leading-relaxed mb-4">{pkg.overview}</p>
-              <div className="flex flex-wrap gap-2">
-                {pkg.places.map((place) => (
-                  <span key={place} className="flex items-center gap-1 text-xs font-body bg-muted text-muted-foreground px-3 py-1 rounded-full">
-                    <MapPin className="w-3 h-3 text-primary" /> {place}
-                  </span>
-                ))}
+        {/* Bento grid — replace image src & alt in GALLERY array above */}
+        <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[220px] gap-4">
+          {GALLERY.map((img, i) => (
+            <FadeSection
+              key={img.alt}
+              delay={i * 70}
+              className={`relative overflow-hidden rounded-2xl group ${img.span}`}
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                <span className="font-display text-white font-semibold text-base flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-primary" /> {img.label}
+                </span>
               </div>
-            </div>
+            </FadeSection>
+          ))}
+        </div>
+      </section>
 
-            {/* Itinerary accordion */}
-            <div className="bg-card rounded-2xl p-6 shadow-zen">
-              <h2 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-primary" /> Day-by-Day Itinerary
-              </h2>
-              <div className="space-y-3">
-                {pkg.itinerary.map((item, idx) => (
-                  <div key={idx} className="border border-border rounded-xl overflow-hidden">
-                    <button
-                      onClick={() => toggleDay(idx)}
-                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-display text-sm font-semibold text-primary">{item.day}</span>
-                      {openDays.includes(idx)
-                        ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                        : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                      }
-                    </button>
-                    {openDays.includes(idx) && (
-                      <div className="px-4 pb-4 pt-2 border-t border-border bg-muted/20">
-                        <p className="font-body text-sm text-muted-foreground leading-relaxed">{item.detail}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+      {/* ════════════════════════════════════════════════════════════════
+          TEAM SECTION — template (commented out)
+          Uncomment this entire block when you're ready to add team members.
+          Replace the placeholder data with real names, roles, photos, quotes.
+      ════════════════════════════════════════════════════════════════
 
-            {/* Inclusions & Exclusions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-card rounded-2xl p-5 shadow-zen">
-                <h3 className="font-display text-base font-bold text-foreground mb-3 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" /> Inclusions
-                </h3>
-                <ul className="space-y-2">
-                  {pkg.inclusions.map((item) => (
-                    <li key={item} className="flex items-start gap-2 font-body text-sm text-muted-foreground">
-                      <CheckCircle className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" /> {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-card rounded-2xl p-5 shadow-zen">
-                <h3 className="font-display text-base font-bold text-foreground mb-3 flex items-center gap-2">
-                  <XCircle className="w-4 h-4 text-red-400" /> Exclusions
-                </h3>
-                <ul className="space-y-2">
-                  {pkg.exclusions.map((item) => (
-                    <li key={item} className="flex items-start gap-2 font-body text-sm text-muted-foreground">
-                      <XCircle className="w-3.5 h-3.5 text-red-400 mt-0.5 flex-shrink-0" /> {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+      const TEAM = [
+        {
+          name: "Your Name",
+          role: "Founder & Lead Guide",
+          image: "/images/team/your-photo.jpg",  // use your own photo
+          quote: "Your personal quote here.",
+        },
+        // Add more team members...
+      ];
+
+      <section className="bg-foreground/[0.03] border-y border-border py-20">
+        <div className="container mx-auto max-w-5xl px-6">
+          <FadeSection className="mb-12">
+            <p className="font-body text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-3 flex items-center gap-2">
+              <span className="inline-block w-6 h-px bg-primary" />
+              The Team
+            </p>
+            <h2 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+              The people behind ZenHills
+            </h2>
+          </FadeSection>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {TEAM.map((member) => (
+              <FadeSection key={member.name} className="bg-card rounded-2xl overflow-hidden shadow-zen border border-border group hover:-translate-y-1 transition-transform duration-300">
+                <div className="relative h-64 overflow-hidden">
+                  <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-lg font-bold text-foreground">{member.name}</h3>
+                  <p className="font-body text-xs text-primary font-semibold uppercase tracking-wide mb-3">{member.role}</p>
+                  <p className="font-body text-sm text-muted-foreground italic">"{member.quote}"</p>
+                </div>
+              </FadeSection>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* ── RIGHT: Pricing sticky ── */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-28 space-y-4">
-              <div className="bg-card rounded-2xl shadow-zen-lg p-6 border border-border">
-                <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-4">
-                  Package Pricing
-                </p>
+      ════════════════════════════════════════════════════════════════ */}
 
-                {/* Standard — strikethrough */}
-                <div className="mb-3 p-3 rounded-lg bg-muted/50">
-                  <p className="font-body text-xs text-muted-foreground mb-1">{pkg.pricing.standardLabel}</p>
-                  <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">
-                    {pkg.pricing.standardPrice}
-                  </p>
-                </div>
+      {/* ════════════════════════════════════════════════════════════════
+          TESTIMONIALS — template (commented out)
+          Uncomment when you have real customer reviews to show.
+          Pair with a star rating library (e.g. react-stars) if desired.
+      ════════════════════════════════════════════════════════════════
 
-                {/* Deluxe — strikethrough (only if exists) */}
-                {pkg.pricing.deluxePrice && (
-                  <div className="mb-3 p-3 rounded-lg bg-muted/50">
-                    <p className="font-body text-xs text-muted-foreground mb-1">{pkg.pricing.deluxeLabel}</p>
-                    <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">
-                      {pkg.pricing.deluxePrice}
-                    </p>
-                  </div>
-                )}
+      const TESTIMONIALS = [
+        {
+          name: "Customer Name",
+          location: "City, State",
+          trip: "Trip Package Name",
+          review: "Full review text here...",
+          rating: 5,
+          avatar: "/images/avatars/customer.jpg",  // optional
+        },
+        // Add more reviews...
+      ];
 
-                {/* Budget — highlighted */}
-                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-5">
-                  <p className="font-body text-xs text-primary font-semibold uppercase tracking-wide mb-1">🎉 Best Price</p>
-                  <p className="font-body text-xs text-muted-foreground mb-1">{pkg.pricing.budgetLabel}</p>
-                  <p className="font-display text-2xl font-bold text-primary">{pkg.pricing.budgetPrice}</p>
-                  <p className="font-body text-xs text-muted-foreground mt-1">*Price may vary based on season & availability.</p>
-                </div>
-
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="w-full bg-zen-gradient text-primary-foreground py-3 rounded-xl font-body font-semibold text-sm hover:opacity-90 transition-opacity shadow-zen mb-3"
-                >
-                  Book Now
-                </button>
-
-                <a
-                  href={`https://wa.me/918409970064?text=Hello%20ZenHills,%20I%20am%20interested%20in%20${encodeURIComponent(trip.title + " – " + pkg.label)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 border border-[#25D366] text-[#25D366] py-3 rounded-xl font-body font-semibold text-sm hover:bg-[#25D366]/10 transition-colors"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-4 h-4" fill="currentColor">
-                    <path d="M16.002 2.667c-7.364 0-13.333 5.969-13.333 13.333 0 2.353.614 4.66 1.781 6.702L2.667 29.333l6.79-1.742a13.235 13.235 0 006.545 1.742h.005c7.364 0 13.333-5.969 13.333-13.333S23.366 2.667 16.002 2.667zm0 24.013h-.004a10.65 10.65 0 01-5.428-1.493l-.388-.23-4.03 1.034 1.075-3.93-.252-.402a10.66 10.66 0 01-1.635-5.659c.002-5.88 4.79-10.668 10.672-10.668 2.846 0 5.52 1.108 7.533 3.121 2.012 2.013 3.12 4.688 3.119 7.534-.003 5.88-4.79 10.667-10.662 10.667zm5.84-7.987c-.32-.16-1.894-.934-2.188-1.04-.293-.107-.507-.16-.72.16-.213.32-.826 1.04-1.013 1.253-.186.213-.373.24-.693.08-.32-.16-1.35-.497-2.571-1.586-.95-.847-1.59-1.893-1.776-2.213-.186-.32-.02-.493.14-.653.144-.143.32-.373.48-.56.16-.187.213-.32.32-.533.107-.213.053-.4-.027-.56-.08-.16-.72-1.733-.986-2.373-.26-.623-.525-.54-.72-.55l-.613-.011c-.213 0-.56.08-.853.4-.293.32-1.12 1.093-1.12 2.667s1.146 3.093 1.306 3.306c.16.213 2.257 3.447 5.472 4.832.765.33 1.36.527 1.825.674.767.243 1.465.208 2.016.126.615-.092 1.894-.773 2.16-1.52.267-.747.267-1.387.187-1.52-.08-.133-.293-.213-.613-.373z"/>
-                  </svg>
-                  Enquire on WhatsApp
-                </a>
-
-                <div className="mt-4 flex items-center gap-2 justify-center text-muted-foreground text-xs font-body">
-                  <Phone className="w-3.5 h-3.5" />
-                  <a href="tel:+919474090064" className="hover:text-primary transition-colors">+91 9474090064</a>
-                  <span>|</span>
-                  <a href="tel:+918409970064" className="hover:text-primary transition-colors">+91 8409970064</a>
-                </div>
+      <section className="container mx-auto max-w-5xl px-6 py-20">
+        <FadeSection className="mb-12">
+          <p className="font-body text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-3 flex items-center gap-2">
+            <span className="inline-block w-6 h-px bg-primary" />
+            Testimonials
+          </p>
+          <h2 className="font-display font-bold text-foreground" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+            What travellers say
+          </h2>
+        </FadeSection>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {TESTIMONIALS.map((t) => (
+            <FadeSection key={t.name} className="bg-card rounded-2xl p-6 shadow-zen border border-border">
+              <div className="flex items-center gap-1 mb-3">
+                {[...Array(t.rating)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-sm">★</span>
+                ))}
               </div>
-
-              <div className="bg-card rounded-xl p-4 shadow-zen flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
+              <p className="font-body text-sm text-muted-foreground leading-relaxed mb-5 italic">"{t.review}"</p>
+              <div className="flex items-center gap-3 border-t border-border pt-4">
+                {t.avatar && <img src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover" />}
                 <div>
-                  <p className="font-body text-xs text-muted-foreground">Duration</p>
-                  <p className="font-display text-sm font-semibold text-foreground">{pkg.duration}</p>
+                  <p className="font-display text-sm font-bold text-foreground">{t.name}</p>
+                  <p className="font-body text-xs text-muted-foreground">{t.location} · {t.trip}</p>
                 </div>
               </div>
-            </div>
-          </div>
+            </FadeSection>
+          ))}
         </div>
+      </section>
 
-        {/* ── SIKKIM TOURIST PLACES (only on sikkim-explorer) ── */}
-        {slug === "sikkim-explorer" && (
-          <div className="mt-16">
-            <div className="text-center mb-10">
-              <p className="font-body text-sm uppercase tracking-[0.2em] text-primary font-semibold mb-3">Explore Sikkim</p>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Sikkim's Main Tourist Places</h2>
-              <p className="font-body text-muted-foreground mt-3 max-w-xl mx-auto">
-                Sikkim is divided into 4 stunning regions — each with its own landscapes, culture and experiences.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sikkimPlaces.map((place) => (
-                <div key={place.region} className="group bg-card rounded-2xl overflow-hidden shadow-zen hover:shadow-zen-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="relative h-44 overflow-hidden">
-                    <img
-                      src={place.image}
-                      alt={place.region}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-3 left-4">
-                      <span className="text-white font-display text-lg font-bold">{place.emoji} {place.region}</span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <ul className="space-y-1.5">
-                      {place.spots.map((spot) => (
-                        <li key={spot} className="flex items-center gap-2 font-body text-sm text-muted-foreground">
-                          <MapPin className="w-3.5 h-3.5 text-primary flex-shrink-0" /> {spot}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
+      ════════════════════════════════════════════════════════════════ */}
+
+      {/* ════════════════════════════════════════════════════════════════
+          CTA — immersive full-bleed with image & overlay
+      ════════════════════════════════════════════════════════════════ */}
+      <FadeSection>
+        <section className="relative mx-4 md:mx-8 my-16 rounded-3xl overflow-hidden min-h-[340px] flex items-center justify-center text-center">
+          {/* Background image — replace with your preferred CTA photo */}
+          <img
+            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1400&q=85"
+            alt="Sikkim scenic"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-primary/40" />
+
+          <div className="relative z-10 px-8 py-16 max-w-2xl mx-auto">
+            <p className="font-body text-xs uppercase tracking-[0.35em] text-white/60 mb-4">
+              Start Your Journey
+            </p>
+            <h2
+              className="font-display font-bold text-white leading-tight mb-4"
+              style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+            >
+              Your Sikkim story
+              <br />
+              <span className="italic font-light text-primary/90">begins here.</span>
+            </h2>
+            <p className="font-body text-white/70 mb-8 max-w-md mx-auto text-[15px] leading-relaxed">
+              Browse our handcrafted packages or reach out directly — we'll build the
+              perfect mountain escape around you.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link
+                to="/trips"
+                className="bg-white text-foreground px-8 py-3.5 rounded-full font-body font-semibold text-sm hover:bg-white/90 transition-colors shadow-zen flex items-center gap-2 group"
+              >
+                Browse Trips <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <a
+                href="https://wa.me/918409970064?text=Hello%20ZenHills,%20I%20want%20to%20know%20more%20about%20your%20trips"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-white/30 text-white px-8 py-3.5 rounded-full font-body font-semibold text-sm hover:bg-white/10 transition-colors"
+              >
+                Chat on WhatsApp
+              </a>
             </div>
           </div>
-        )}
-      </div>
-
-      {/* ── BOOKING MODAL ── */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-8 relative max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-gray-500 hover:text-black text-xl">✕</button>
-            <h2 className="text-2xl font-bold mb-1 text-center">{trip.title}</h2>
-            <p className="text-sm text-center text-muted-foreground mb-6">{pkg.label}</p>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <input type="text" placeholder="Full Name" name="fullName" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              <input type="email" placeholder="Email Address" name="email" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              <input type="tel" placeholder="Phone Number" name="phone" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-muted-foreground">Arrival Date</label>
-                <input name="arrivalDate" type="date" min={new Date().toISOString().split("T")[0]} className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <input type="number" name="adults" placeholder="Adults (12+)" min="1" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                <input type="number" name="children" placeholder="Children (<12)" min="0" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              </div>
-              <textarea placeholder="Special Requests" name="special_requests" className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none" rows={3} />
-              <button type="submit" className="w-full bg-zen-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
-                Submit Booking
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
+        </section>
+      </FadeSection>
+        <DeveloperCredit />
       <Footer />
     </div>
   );
 };
 
-export default TripDetails;
+export default About;
