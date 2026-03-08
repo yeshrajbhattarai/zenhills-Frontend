@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mountain, Phone, Mail, MapPin } from "lucide-react";
+import {Phone, Mail, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -10,10 +10,14 @@ const Footer = () => {
 
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Mountain className="w-7 h-7 text-accent" />
+            <div className="flex items-center gap-3">
+              <img
+                src="/zenhills logo.png"
+                alt="ZenHills Journeys"
+                className="h-10 w-auto"
+              />
               <span className="font-display text-2xl font-bold">
-                Zen<span className="text-accent">Hills</span>
+                ZenHills<span className="text-accent">Journeys</span>
               </span>
             </div>
 
@@ -110,7 +114,7 @@ const Footer = () => {
       rel="noopener noreferrer"
       className="text-accent hover:underline"
     >
-      Yesh Raj Bhattarai - Software Devloper
+      Yesh Raj Bhattarai - Software Developer
     </a>
   </p>
         </div>

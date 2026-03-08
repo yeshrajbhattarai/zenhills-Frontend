@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Mountain, Phone, ChevronDown, Hotel } from "lucide-react";
+import { Menu, X, Phone, ChevronDown, Hotel, Home, Info, Briefcase, Headphones, Mail } from "lucide-react";
 import trips from "../data/trips";
 
 const Navbar = () => {
@@ -34,12 +34,12 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const linkClass = (path: string) =>
-    `font-body text-sm font-medium tracking-wide uppercase transition-colors hover:text-primary ${
+    `flex items-center gap-1.5 font-body text-sm font-medium tracking-wide uppercase transition-colors hover:text-primary ${
       isActive(path) ? "text-primary border-b-2 border-primary pb-1" : "text-muted-foreground"
     }`;
 
   const dropdownBtnClass = (active: boolean) =>
-    `flex items-center gap-1 font-body text-sm font-medium tracking-wide uppercase transition-colors hover:text-primary ${
+    `flex items-center gap-1.5 font-body text-sm font-medium tracking-wide uppercase transition-colors hover:text-primary ${
       active ? "text-primary border-b-2 border-primary pb-1" : "text-muted-foreground"
     }`;
 
@@ -65,43 +65,73 @@ const Navbar = () => {
             <div className="flex items-center justify-between h-16 md:h-[68px]">
 
               {/* Logo */}
-              <Link to="/" className="flex items-center gap-2 group">
-                <Mountain className="w-7 h-7 text-primary transition-transform group-hover:scale-110" />
-                <span className="font-display text-xl md:text-2xl font-bold text-foreground">
-                  Zen<span className="text-primary">Hills</span>
-                </span>
+              <Link to="/" className="flex items-center group">
+                <img
+                  src="/zenhills logo.png"
+                  alt="ZenHills Journeys"
+                  className="h-12 w-auto transition-transform group-hover:scale-105"
+                />
+                <span className="font-display text-xl font-bold">
+                ZenHills<span className="text-accent">Journeys</span>
+              </span>
               </Link>
 
               {/* Desktop Nav */}
               <div className="hidden md:flex items-center gap-7">
-                <Link to="/" className={linkClass("/")}>Home</Link>
-                <Link to="/about" className={linkClass("/about")}>About</Link>
+
+                <Link to="/" className={linkClass("/")}>
+                  <Home className="w-3.5 h-3.5" /> Home
+                </Link>
+
+                <Link to="/about" className={linkClass("/about")}>
+                  <Info className="w-3.5 h-3.5" /> About
+                </Link>
 
                 {/* Packages Dropdown */}
                 <div className="relative" ref={packagesRef}>
                   <button
                     onClick={() => { setPackagesOpen(!packagesOpen); setHotelsOpen(false); }}
-                    className={dropdownBtnClass(location.pathname.startsWith("/detailed"))}
+                    className={dropdownBtnClass(location.pathname.startsWith("/detailed") || location.pathname === "/trips")}
                   >
+                    <Briefcase className="w-3.5 h-3.5" />
                     Packages
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${packagesOpen ? "rotate-180" : ""}`} />
                   </button>
                   {packagesOpen && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-card rounded-xl shadow-zen-lg border border-border overflow-hidden animate-fade-in">
-                      <div className="py-2 max-h-80 overflow-y-auto">
-                        {trips.map((trip) => (
-                          <Link
-                            key={trip.slug}
-                            to={`/detailed/${trip.slug}`}
-                            onClick={() => setPackagesOpen(false)}
-                            className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
-                          >
-                            <span className="font-medium">{trip.title}</span>
-                            <span className="block text-xs text-muted-foreground mt-0.5">
-                              {trip.location} · {trip.duration}
-                            </span>
-                          </Link>
-                        ))}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-card rounded-xl shadow-zen-lg border border-border overflow-hidden animate-fade-in" style={{ width: "520px" }}>
+                      <div className="py-2 grid grid-cols-2 divide-x divide-border">
+                        {/* Column 1 */}
+                        <div>
+                          {trips.slice(0, Math.ceil(trips.length / 2)).map((trip) => (
+                            <Link
+                              key={trip.slug}
+                              to={`/detailed/${trip.slug}`}
+                              onClick={() => setPackagesOpen(false)}
+                              className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
+                            >
+                              <span className="font-medium">{trip.title}</span>
+                              <span className="block text-xs text-muted-foreground mt-0.5">
+                                {trip.location} · {trip.duration}
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                        {/* Column 2 */}
+                        <div>
+                          {trips.slice(Math.ceil(trips.length / 2)).map((trip) => (
+                            <Link
+                              key={trip.slug}
+                              to={`/detailed/${trip.slug}`}
+                              onClick={() => setPackagesOpen(false)}
+                              className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
+                            >
+                              <span className="font-medium">{trip.title}</span>
+                              <span className="block text-xs text-muted-foreground mt-0.5">
+                                {trip.location} · {trip.duration}
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                       <div className="border-t border-border px-4 py-2.5">
                         <Link to="/trips" onClick={() => setPackagesOpen(false)} className="text-xs text-primary font-semibold hover:underline">
@@ -118,6 +148,7 @@ const Navbar = () => {
                     onClick={() => { setHotelsOpen(!hotelsOpen); setPackagesOpen(false); }}
                     className={dropdownBtnClass(isActive("/hotels"))}
                   >
+                    <Hotel className="w-3.5 h-3.5" />
                     Our Hotels
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${hotelsOpen ? "rotate-180" : ""}`} />
                   </button>
@@ -143,9 +174,16 @@ const Navbar = () => {
                   )}
                 </div>
 
-                <Link to="/services" className={linkClass("/services")}>Services</Link>
-                <Link to="/contact" className={linkClass("/contact")}>Contact</Link>
-                <Link to="/admin" className={linkClass("/admin")}>Admin</Link>
+                <Link to="/services" className={linkClass("/services")}>
+                  <Headphones className="w-3.5 h-3.5" /> Services
+                </Link>
+
+                <Link to="/contact" className={linkClass("/contact")}>
+                  <Mail className="w-3.5 h-3.5" /> Contact
+                </Link>
+
+                {/* <Link to="/admin" className={linkClass("/admin")}>Admin</Link> */}
+
               </div>
 
               {/* Mobile Toggle */}
@@ -159,16 +197,25 @@ const Navbar = () => {
           {open && (
             <div className="md:hidden bg-card border-t border-border animate-fade-in">
               <div className="px-4 py-4 space-y-1">
-                <Link to="/" onClick={() => setOpen(false)} className={`block py-2 font-body text-base font-medium hover:text-primary ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}>Home</Link>
-                <Link to="/about" onClick={() => setOpen(false)} className={`block py-2 font-body text-base font-medium hover:text-primary ${isActive("/about") ? "text-primary" : "text-muted-foreground"}`}>About</Link>
+
+                <Link to="/" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}>
+                  <Home className="w-4 h-4" /> Home
+                </Link>
+
+                <Link to="/about" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/about") ? "text-primary" : "text-muted-foreground"}`}>
+                  <Info className="w-4 h-4" /> About
+                </Link>
 
                 {/* Mobile Packages */}
                 <div>
                   <button onClick={() => setMobilePackagesOpen(!mobilePackagesOpen)} className="flex items-center justify-between w-full py-2 font-body text-base font-medium text-muted-foreground hover:text-primary">
-                    Packages <ChevronDown className={`w-4 h-4 transition-transform ${mobilePackagesOpen ? "rotate-180" : ""}`} />
+                    <span className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4" /> Packages
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${mobilePackagesOpen ? "rotate-180" : ""}`} />
                   </button>
                   {mobilePackagesOpen && (
-                    <div className="pl-4 pb-2 space-y-1 border-l-2 border-primary/20 ml-1">
+                    <div className="pl-4 pb-2 space-y-1 border-l-2 border-primary/20 ml-1 max-h-52 overflow-y-auto">
                       {trips.map((trip) => (
                         <Link key={trip.slug} to={`/detailed/${trip.slug}`} onClick={() => setOpen(false)} className="block py-1.5 text-sm text-muted-foreground hover:text-primary">
                           {trip.title}
@@ -181,7 +228,10 @@ const Navbar = () => {
                 {/* Mobile Hotels */}
                 <div>
                   <button onClick={() => setMobileHotelsOpen(!mobileHotelsOpen)} className="flex items-center justify-between w-full py-2 font-body text-base font-medium text-muted-foreground hover:text-primary">
-                    Our Hotels <ChevronDown className={`w-4 h-4 transition-transform ${mobileHotelsOpen ? "rotate-180" : ""}`} />
+                    <span className="flex items-center gap-2">
+                      <Hotel className="w-4 h-4" /> Our Hotels
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${mobileHotelsOpen ? "rotate-180" : ""}`} />
                   </button>
                   {mobileHotelsOpen && (
                     <div className="pl-4 pb-2 space-y-1 border-l-2 border-primary/20 ml-1">
@@ -191,9 +241,18 @@ const Navbar = () => {
                   )}
                 </div>
 
-                <Link to="/services" onClick={() => setOpen(false)} className={`block py-2 font-body text-base font-medium hover:text-primary ${isActive("/services") ? "text-primary" : "text-muted-foreground"}`}>Services</Link>
-                <Link to="/contact" onClick={() => setOpen(false)} className={`block py-2 font-body text-base font-medium hover:text-primary ${isActive("/contact") ? "text-primary" : "text-muted-foreground"}`}>Contact</Link>
-                <Link to="/admin" onClick={() => setOpen(false)} className={`block py-2 font-body text-base font-medium hover:text-primary ${isActive("/admin") ? "text-primary" : "text-muted-foreground"}`}>Admin</Link>
+                <Link to="/services" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/services") ? "text-primary" : "text-muted-foreground"}`}>
+                  <Headphones className="w-4 h-4" /> Services
+                </Link>
+
+                <Link to="/contact" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/contact") ? "text-primary" : "text-muted-foreground"}`}>
+                  <Mail className="w-4 h-4" /> Contact
+                </Link>
+
+                <Link to="/admin" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/admin") ? "text-primary" : "text-muted-foreground"}`}>
+                  Admin
+                </Link>
+
               </div>
             </div>
           )}

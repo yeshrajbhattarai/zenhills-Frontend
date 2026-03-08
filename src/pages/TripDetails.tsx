@@ -13,31 +13,31 @@ const sikkimPlaces = [
   {
     region: "Gangtok",
     emoji: "🏙️",
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80",
+    image: "https://imgs.search.brave.com/5oKjhWnH7lGgbBxQhhZt6fjEuIjN_FenBJbTYv10Oiw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9iYWNr/cGFja2Vyc3VuaXRl/ZC5pbi9fbmV4dC9p/bWFnZT91cmw9aHR0/cHM6Ly9icHUtaW1h/Z2VzLXYxLnMzLmV1/LW5vcnRoLTEuYW1h/em9uYXdzLmNvbS91/cGxvYWRzLzE3MjE4/NTIxODgyNTRfbWct/bWFyZy1nYW5ndG9r/LXJhaW4tbWluLmpw/ZyZ3PTE5MjAmcT03/NQ",
     spots: ["MG Marg", "Tsomgo Lake", "Nathula Pass", "Baba Mandir"],
   },
   {
     region: "North Sikkim",
     emoji: "🏔️",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
+    image: "https://imgs.search.brave.com/jT7meDVd_4YwnEHmkI5R0foLMk8DKuw5Q50o11dqfdk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAyLzA4Lzg0Lzk4/LzM2MF9GXzIwODg0/OTg5Nl9OZ0VnTzl6/ZlU2R091eXpuTTdM/UklBYkhGYmJpbndx/MC5qcGc",
     spots: ["Lachen – Gurudongmar Lake", "Lachung – Yumthang Valley", "Zero Point"],
   },
   {
     region: "East Sikkim (Silk Route)",
     emoji: "🛤️",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80",
+    image: "https://imgs.search.brave.com/3nXPfRApir2infRu42i425zjriCcHIce0LjIMqQrL6M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dmVlbmF3b3JsZC5j/b20vd3AtY29udGVu/dC91cGxvYWRzLzIw/MjIvMDgvOC1CZXN0/LVBsYWNlcy10by1W/aXNpdC1vbi1TaWxr/LVJvdXRlLVNpa2tp/bS5qcGc_aW13aWR0/aD0xMzAw",
     spots: ["Zuluk", "Nathang Valley", "Kupup Lake (Elephant Lake)"],
   },
   {
     region: "West Sikkim",
     emoji: "🕌",
-    image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&q=80",
+    image: "https://imgs.search.brave.com/ol4V1Ks_OeWZTgxmVyGkwTXlW4vJwmpEilRljGMhICQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9ibG9n/LnlvdXJ0b3Vycy5p/bi93cC1jb250ZW50/L3VwbG9hZHMvMjAy/NC8wNS93ZXN0LXNp/a2tpbS5qcGc",
     spots: ["Pelling – Sky Walk", "Pemayangtse Monastery", "Khecheopalri Lake"],
   },
   {
     region: "South Sikkim",
     emoji: "🌸",
-    image: "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=600&q=80",
+    image: "https://imgs.search.brave.com/oMOPRnPgDQ6h22dmLZ_u_zo-7ph5LJKt297xgXpRxuc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS1jZG4udHJpcGFk/dmlzb3IuY29tL21l/ZGlhL3Bob3RvLW8v/MjEvZjkvZDUvZTAv/Y2hhcmRoYW0tc291/dGgtc2lra2ltLmpw/Zw",
     spots: ["Ravangla – Buddha Park", "Namchi – Char Dham"],
   },
 ];
@@ -47,8 +47,10 @@ const TripDetails = () => {
   const trip = trips.find((t) => t.slug === slug);
 
   const [activePackageIdx, setActivePackageIdx] = useState(0);
-  const [openDays, setOpenDays] = useState<number[]>([0]);
   const [showForm, setShowForm] = useState(false);
+
+  // Tracks COLLAPSED days per package key (all open by default)
+  const [collapsedMap, setCollapsedMap] = useState<Record<string, number[]>>({});
 
   if (!trip) {
     return (
@@ -62,11 +64,18 @@ const TripDetails = () => {
   }
 
   const pkg = trip.packages[activePackageIdx];
+  const pkgKey = String(activePackageIdx);
+  const collapsed = collapsedMap[pkgKey] ?? [];
+  const isDayOpen = (idx: number) => !collapsed.includes(idx);
 
   const toggleDay = (idx: number) => {
-    setOpenDays((prev) =>
-      prev.includes(idx) ? prev.filter((d) => d !== idx) : [...prev, idx]
-    );
+    setCollapsedMap((prev) => {
+      const cur = prev[pkgKey] ?? [];
+      return {
+        ...prev,
+        [pkgKey]: cur.includes(idx) ? cur.filter((d) => d !== idx) : [...cur, idx],
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -149,7 +158,7 @@ const TripDetails = () => {
             {trip.packages.map((p, idx) => (
               <button
                 key={p.id}
-                onClick={() => { setActivePackageIdx(idx); setOpenDays([0]); }}
+                onClick={() => { setActivePackageIdx(idx); setCollapsedMap({}); }}
                 className={`px-5 py-2.5 rounded-xl font-body text-sm font-medium border transition-all duration-200 ${
                   activePackageIdx === idx
                     ? "bg-zen-gradient text-primary-foreground border-transparent shadow-zen"
@@ -181,33 +190,124 @@ const TripDetails = () => {
               </div>
             </div>
 
-            {/* Itinerary accordion */}
+            {/* ══════════════════════════════════════
+                ITINERARY — PREMIUM REDESIGN
+            ══════════════════════════════════════ */}
             <div className="bg-card rounded-2xl p-6 shadow-zen">
-              <h2 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-primary" /> Day-by-Day Itinerary
-              </h2>
-              <div className="space-y-3">
-                {pkg.itinerary.map((item, idx) => (
-                  <div key={idx} className="border border-border rounded-xl overflow-hidden">
-                    <button
-                      onClick={() => toggleDay(idx)}
-                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-display text-sm font-semibold text-primary">{item.day}</span>
-                      {openDays.includes(idx)
-                        ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                        : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                      }
-                    </button>
-                    {openDays.includes(idx) && (
-                      <div className="px-4 pb-4 pt-2 border-t border-border bg-muted/20">
-                        <p className="font-body text-sm text-muted-foreground leading-relaxed">{item.detail}</p>
+
+              {/* Section header */}
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-11 h-11 rounded-xl bg-zen-gradient flex items-center justify-center flex-shrink-0 shadow-zen">
+                  <Calendar className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="font-display text-xl font-bold text-foreground">Day-by-Day Itinerary</h2>
+                  <p className="font-body text-xs text-muted-foreground mt-0.5">
+                    All days expanded · Click any day to collapse
+                  </p>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div className="relative">
+                {/* Vertical connecting line */}
+                <div
+                  className="absolute top-0 bottom-0 w-0.5"
+                  style={{
+                    left: "2.25rem",
+                    background: "linear-gradient(to bottom, #0f766e, #0f766e44, transparent)",
+                  }}
+                />
+
+                <div className="space-y-5">
+                  {pkg.itinerary.map((item, idx) => {
+                    const open = isDayOpen(idx);
+                    const dayNum = idx + 1;
+
+                    return (
+                      <div key={idx} className="relative" style={{ paddingLeft: "5.5rem" }}>
+
+                        {/* ── Calendar Badge ── */}
+                        <div className="absolute left-0 top-0" style={{ width: "4.5rem" }}>
+                          <div className="rounded-xl overflow-hidden border-2 border-primary/40 shadow-md bg-card">
+                            {/* Top teal bar */}
+                            <div
+                              className="flex items-center justify-center gap-1 py-1.5"
+                              style={{ background: "linear-gradient(135deg, #0f766e, #0d9488)" }}
+                            >
+                              <Calendar className="w-3 h-3 text-white" />
+                              <span className="text-white text-[9px] font-bold uppercase tracking-widest">Day</span>
+                            </div>
+                            {/* Large day number */}
+                            <div className="flex items-center justify-center py-2 bg-white dark:bg-card">
+                              <span
+                                className="font-display font-black text-primary"
+                                style={{ fontSize: "1.75rem", lineHeight: 1 }}
+                              >
+                                {dayNum}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* ── Day Card ── */}
+                        <div
+                          className={`rounded-xl border-2 overflow-hidden transition-all duration-300 ${
+                            open
+                              ? "border-primary/25 shadow-[0_4px_20px_rgba(15,118,110,0.12)]"
+                              : "border-border shadow-sm"
+                          }`}
+                        >
+                          {/* Card Header */}
+                          <button
+                            onClick={() => toggleDay(idx)}
+                            className={`w-full flex items-start justify-between px-5 py-4 text-left transition-colors gap-3 ${
+                              open
+                                ? "bg-primary/5"
+                                : "bg-muted/20 hover:bg-muted/40"
+                            }`}
+                          >
+                            <span className="font-display text-base md:text-lg font-bold text-foreground leading-snug flex-1">
+                              {item.day}
+                            </span>
+                            <div
+                              className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                                open
+                                  ? "bg-primary text-white shadow-md"
+                                  : "bg-muted text-muted-foreground"
+                              }`}
+                            >
+                              {open
+                                ? <ChevronUp className="w-4 h-4" />
+                                : <ChevronDown className="w-4 h-4" />
+                              }
+                            </div>
+                          </button>
+
+                          {/* Card Body */}
+                          {open && (
+                            <div className="px-5 py-5 border-t-2 border-primary/10 bg-gradient-to-br from-white to-primary/3 dark:from-card dark:to-primary/5">
+                              <div className="flex gap-4">
+                                {/* Teal accent bar */}
+                                <div
+                                  className="w-1.5 rounded-full flex-shrink-0 self-stretch min-h-[1.5rem]"
+                                  style={{ background: "linear-gradient(to bottom, #0f766e, #14b8a6)" }}
+                                />
+                                {/* Description */}
+                                <p className="font-body text-sm md:text-base text-foreground leading-relaxed">
+                                  {item.detail}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                ))}
+                    );
+                  })}
+                </div>
               </div>
             </div>
+            {/* ══ END ITINERARY ══ */}
 
             {/* Inclusions & Exclusions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -246,7 +346,6 @@ const TripDetails = () => {
                   Package Pricing <span className="normal-case">(per person)</span>
                 </p>
 
-                {/* Standard — strikethrough */}
                 <div className="mb-3 p-3 rounded-lg bg-muted/50">
                   <p className="font-body text-xs text-muted-foreground mb-1">Standard Package</p>
                   <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">
@@ -254,7 +353,6 @@ const TripDetails = () => {
                   </p>
                 </div>
 
-                {/* Deluxe — strikethrough (if exists) */}
                 {pkg.pricing.deluxe && (
                   <div className="mb-3 p-3 rounded-lg bg-muted/50">
                     <p className="font-body text-xs text-muted-foreground mb-1">Deluxe Package</p>
@@ -264,7 +362,6 @@ const TripDetails = () => {
                   </div>
                 )}
 
-                {/* Budget — highlighted */}
                 <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 mb-5">
                   <p className="font-body text-xs text-primary font-semibold uppercase tracking-wide mb-1">🎉 Best Price</p>
                   <p className="font-body text-xs text-muted-foreground mb-1">Budget Package</p>

@@ -18,15 +18,20 @@ import sikkim4  from "../assets/Gallery/Sikkim4.jpeg";
 import sikkim5  from "../assets/Gallery/sikkim5.jpeg";
 import sikkim6  from "../assets/Gallery/sikkim6.jpeg";
 import sikkim7  from "../assets/Gallery/sikkim7.jpeg";
+import sikkim8  from "../assets/Gallery/sikkim8.jpg";
+import sikkim9  from "../assets/Gallery/sikkim9.jpg";
+import sikkim10 from "../assets/Gallery/sikkim10.jpg";
+import sikkim11 from "../assets/Gallery/sikkim11.jpg";
+import sikkim12 from "../assets/Gallery/sikkim12.jpg";
 
 const heroSlides = [
-  { image: heroBg,   label: "Gangtok, Sikkim" },
-  { image: sikkim1,  label: "North Sikkim" },
-  { image: sikkim2,  label: "Yumthang Valley" },
-  { image: sikkim3,  label: "Himalayan Peaks" },
-  { image: sikkim4,  label: "Monastery Trail" },
-  { image: sikkim6,  label: "Mountain Serenity" },
+  { image: sikkim8,  label: "Silk Route" },
+  { image: sikkim9,  label: "Himalayan Serenity" },
+  { image: sikkim10, label: "Mountain Trails" },
+  { image: sikkim11, label: "North, Sikkim" },
+  { image: sikkim12, label: "North Sikkim" },
 ];
+
 
 const galleryImages = [
   { src: sikkim1, label: "North Sikkim" },

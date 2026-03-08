@@ -14,10 +14,10 @@ import { ArrowRight, MapPin, Compass, Shield, Leaf, Users } from "lucide-react";
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: "500+", label: "Happy Travellers" },
-  { value: "4.9 ★", label: "Average Rating" },
+  { value: "100+", label: "Happy Travellers" },
+  { value: "4.7 ★", label: "Average Rating" },
   { value: "12+",  label: "Unique Routes" },
-  { value: "5 Yrs", label: "Of Experience" },
+  { value: "1 Yrs", label: "Of Experience" },
   { value: "4",    label: "Regions of Sikkim" },
 ];
 
@@ -48,10 +48,14 @@ const PHILOSOPHIES = [
   },
 ];
 
+import silk  from "../assets/Gallery/sikkim8.jpg";
+import sikkim9  from "../assets/Gallery/gangtok1.jpeg";
+import west  from "../assets/Gallery/westsikkim.jpg";
+import sik  from "../assets/Gallery/sikkim10.jpg";
 // Gallery images: replace src values with your own photography
 const GALLERY = [
   {
-    src: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&q=85",
+    src: sikkim9,
     alt: "Gangtok aerial view",
     label: "Gangtok",
     span: "row-span-2",
@@ -63,13 +67,13 @@ const GALLERY = [
     span: "",
   },
   {
-    src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=85",
+    src: silk,
     alt: "Silk Route",
     label: "Silk Route",
     span: "",
   },
   {
-    src: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&q=85",
+    src: west,
     alt: "West Sikkim monastery",
     label: "West Sikkim",
     span: "col-span-2",
@@ -155,7 +159,7 @@ const About = () => {
       <section className="relative h-[92vh] min-h-[560px] flex items-end overflow-hidden">
         {/* Background image — replace with your hero photo */}
         <img
-          src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1600&q=90"
+          src= {sik}
           alt="Sikkim landscape"
           className="absolute inset-0 w-full h-full object-cover scale-105"
           style={{ animation: "hero-zoom 12s ease-out forwards" }}
@@ -260,7 +264,7 @@ const About = () => {
           />
           {/* Floating accent card */}
           <div className="absolute -bottom-6 -right-4 lg:-right-10 bg-card border border-border rounded-xl shadow-zen p-4 max-w-[180px]">
-            <p className="font-display text-2xl font-bold text-primary leading-none mb-1">2019</p>
+            <p className="font-display text-2xl font-bold text-primary leading-none mb-1">2025</p>
             <p className="font-body text-xs text-muted-foreground leading-snug">
               Founded in the heart of Gangtok
             </p>
@@ -312,14 +316,11 @@ const About = () => {
               {/* ── FOUNDER QUOTE ──────────────────────────────────────────
                   Replace with a real quote from your team or brand tagline.
               ─────────────────────────────────────────────────────────── */}
-              "Sikkim is not just a destination — it's a feeling."
+              "Sikkim is not just a destination, it's a feeling. Don't miss to feel it"
             </p>
-            {/* ── QUOTE ATTRIBUTION ──────────────────────────────────────
-                Uncomment and fill in when ready:
                 <footer className="font-body text-xs text-muted-foreground mt-2 tracking-wide">
-                  — Founder Name, ZenHills Journeys
+                  — Chandan Singh, ZenHills Journeys
                 </footer>
-            ─────────────────────────────────────────────────────────── */}
           </blockquote>
         </FadeSection>
       </section>
