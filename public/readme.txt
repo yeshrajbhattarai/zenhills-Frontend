@@ -1,8 +1,13 @@
 
 maintenance code
 
+
 {
-"rewrites": [
-{ "source": "/(.*)", "destination": "/" }
-]
+  "redirects": [
+    {
+      "source": "/((?!maintenance.html).*)",
+      "destination": "/maintenance.html",
+      "permanent": false
+    }
+  ]
 }

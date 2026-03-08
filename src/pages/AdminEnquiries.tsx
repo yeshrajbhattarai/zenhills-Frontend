@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Mail, Phone, Calendar, User, Lock, Eye, EyeOff, LogOut } from "lucide-react";
 
@@ -12,13 +12,11 @@ interface Enquiry {
   created_at: string;
 }
 
-// ─── PASSWORDS ───────────────────────────────────────────────────────────────
-// Frontend UI password — protects the login screen
-const ADMIN_PASSWORD = "zenhills@chandan2026";
-
-// API key — sent as a header with every request to the backend
-// Must match the ADMIN_KEY environment variable set on PythonAnywhere
-const ADMIN_API_KEY  = "zenhills_admin_k9x2m7p4q8r3n6w1";
+// ─── SECRETS — set in .env locally, Vercel dashboard in production ────────────
+// .env:  VITE_ADMIN_PASSWORD=zenhills@chandan2026
+//        VITE_ADMIN_API_KEY=zenhills_admin_k9x2m7p4q8r3n6w1
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD as string;
+const ADMIN_API_KEY  = import.meta.env.VITE_ADMIN_API_KEY  as string;
 
 function AdminEnquiries() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -27,19 +25,19 @@ function AdminEnquiries() {
   const [passwordError, setPasswordError] = useState(false);
   const [shaking, setShaking]             = useState(false);
 
-  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [enquiries, setEnquiries]   = useState<Enquiry[]>([]);
+  const [loading, setLoading]       = useState(false);
   const [fetchError, setFetchError] = useState(false);
 
-  // Fetch only after login — sends API key header with every request
-  useEffect(() => {
-    if (!authenticated) return;
+  // ── Called only when password is correct ──────────────────────────────────
+  const fetchEnquiries = (apiKey: string) => {
     setLoading(true);
     setFetchError(false);
 
     fetch("https://yeshraj.pythonanywhere.com/api/enquiries/", {
       headers: {
-        "X-Admin-Key": ADMIN_API_KEY,
+        // Header is attached HERE — only after password is verified
+        "X-Admin-Key": apiKey,
       },
     })
       .then((res) => {
@@ -55,12 +53,14 @@ function AdminEnquiries() {
         setFetchError(true);
         setLoading(false);
       });
-  }, [authenticated]);
+  };
 
   const handleLogin = () => {
     if (passwordInput === ADMIN_PASSWORD) {
       setAuthenticated(true);
       setPasswordError(false);
+      // Password correct → now attach key and fetch
+      fetchEnquiries(ADMIN_API_KEY);
     } else {
       setPasswordError(true);
       setShaking(true);
@@ -77,7 +77,7 @@ function AdminEnquiries() {
     setAuthenticated(false);
     setPasswordInput("");
     setEnquiries([]);
-    setLoading(true);
+    setLoading(false);
     setFetchError(false);
   };
 
@@ -107,7 +107,10 @@ function AdminEnquiries() {
               <input
                 type={showPassword ? "text" : "password"}
                 value={passwordInput}
-                onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  setPasswordError(false);
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter password"
                 className={`w-full px-4 py-3 pr-12 rounded-lg border bg-background font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-colors ${
@@ -190,7 +193,7 @@ function AdminEnquiries() {
             <div className="bg-card rounded-2xl shadow-zen p-6">
               <p className="text-muted-foreground text-sm">System Status</p>
               <p className={`font-semibold mt-2 ${fetchError ? "text-red-500" : "text-green-600"}`}>
-                {loading ? "Loading..." : fetchError ? "Connection Error" : "Connected"}
+                {loading ? "Loading..." : fetchError ? "Connection Error" : "Connected ✅"}
               </p>
             </div>
           </div>
