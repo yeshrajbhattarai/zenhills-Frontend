@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import DevCard from "../components/DevCard";
+import DevCred from "../components/DeveloperCredit";
 
 import trips from "../data/trips";
 
@@ -27,8 +28,8 @@ const sikkim13 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032261/
 
 
 const heroSlides = [
-  { image: sikkim13,  label: "Nepal" },
   { image: sikkim10, label: "Mountain Trails" },
+  { image: sikkim13,  label: "Nepal" },
   { image: sikkim11, label: "North, Sikkim" },
   { image: sikkim9, label: "Himalayan Serenity" },
   { image: sikkim12, label: "North, Sikkim" },
@@ -262,7 +263,16 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+      {/* ── CTA ── */}
+      <section className="bg-zen-gradient py-16 md:py-20 px-4">
+        <div className="container mx-auto max-w-3xl text-center">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-4">Ready for Your Next Adventure?</h2>
+          <p className="font-body text-primary-foreground/80 mb-8 max-w-lg mx-auto">Let our experts plan the perfect getaway for you. Custom itineraries, best prices, unforgettable memories.</p>
+          <Link to="/contact" className="inline-flex items-center gap-2 bg-primary-foreground text-primary px-8 py-3.5 rounded-lg font-body font-semibold text-sm hover:bg-primary-foreground/90 transition-colors">
+            Plan My Trip <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
       {/* ── GALLERY ── */}
       <section className="py-20 md:py-28 px-4 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
@@ -343,17 +353,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="bg-zen-gradient py-16 md:py-20 px-4">
-        <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-4">Ready for Your Next Adventure?</h2>
-          <p className="font-body text-primary-foreground/80 mb-8 max-w-lg mx-auto">Let our experts plan the perfect getaway for you. Custom itineraries, best prices, unforgettable memories.</p>
-          <Link to="/contact" className="inline-flex items-center gap-2 bg-primary-foreground text-primary px-8 py-3.5 rounded-lg font-body font-semibold text-sm hover:bg-primary-foreground/90 transition-colors">
-            Plan My Trip <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
 
+            <DevCred/>
       <Footer />
 
       <a href="https://wa.me/918409970064?text=Hello%20ZenHills,%20I%20am%20interested%20in%20your%20Sikkim%20tour%20packages." target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 z-50">

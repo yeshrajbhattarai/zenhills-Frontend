@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
   MapPin, Calendar, Star, CheckCircle, XCircle,
-  ChevronDown, ChevronUp, Phone
+  ChevronDown, ChevronUp, Phone, Images, X, ChevronLeft, ChevronRight
 } from "lucide-react";
 import Swal from "sweetalert2";
 import trips from "../data/trips";
@@ -42,14 +42,233 @@ const sikkimPlaces = [
   },
 ];
 
+// ── Lightbox Component ──────────────────────────────────────────────────────
+const Lightbox = ({
+  images,
+  startIndex,
+  onClose,
+}: {
+  images: string[];
+  startIndex: number;
+  onClose: () => void;
+}) => {
+  const [current, setCurrent] = useState(startIndex);
+
+  const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
+  const next = () => setCurrent((c) => (c + 1) % images.length);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      {/* Close */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      {/* Counter */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/60 text-sm font-body">
+        {current + 1} / {images.length}
+      </div>
+
+      {/* Prev */}
+      {images.length > 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); prev(); }}
+          className="absolute left-4 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+      )}
+
+      {/* Image */}
+      <img
+        src={images[current]}
+        alt={`Gallery photo ${current + 1}`}
+        className="max-w-[90vw] max-h-[85vh] object-contain rounded-xl shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      />
+
+      {/* Next */}
+      {images.length > 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); next(); }}
+          className="absolute right-4 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      )}
+
+      {/* Thumbnail strip */}
+      {images.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto px-2">
+          {images.map((img, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => { e.stopPropagation(); setCurrent(idx); }}
+              className={`flex-shrink-0 w-14 h-10 rounded-lg overflow-hidden border-2 transition-all ${
+                idx === current ? "border-primary opacity-100 scale-110" : "border-transparent opacity-50 hover:opacity-80"
+              }`}
+            >
+              <img src={img} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Photo Gallery Section ───────────────────────────────────────────────────
+const PhotoGallery = ({ images, tripTitle }: { images: string[]; tripTitle: string }) => {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  // Filter out placeholder strings
+  const validImages = images.filter((url) => !url.startsWith("REPLACE_WITH"));
+
+  if (validImages.length === 0) return null;
+
+  // Layout: first image large, rest in grid
+  const firstImg = validImages[0];
+  const restImgs = validImages.slice(1);
+
+  return (
+    <>
+      <div className="mt-16">
+        {/* Section Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-11 h-11 rounded-xl bg-zen-gradient flex items-center justify-center shadow-zen">
+            <Images className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+              Photo Gallery
+            </h2>
+            <p className="font-body text-sm text-muted-foreground mt-0.5">
+              {validImages.length} photos · Click any photo to view full size
+            </p>
+          </div>
+        </div>
+
+        {/* Gallery Grid */}
+        {validImages.length === 1 ? (
+          // Single image — centered
+          <div
+            className="relative h-72 rounded-2xl overflow-hidden cursor-pointer group shadow-zen-lg"
+            onClick={() => setLightboxIndex(0)}
+          >
+            <img src={firstImg} alt="Gallery" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 text-white text-sm px-4 py-2 rounded-full font-body">View Photo</span>
+            </div>
+          </div>
+        ) : validImages.length === 2 ? (
+          // 2 images — side by side
+          <div className="grid grid-cols-2 gap-3">
+            {validImages.map((img, idx) => (
+              <div
+                key={idx}
+                className="relative h-56 rounded-2xl overflow-hidden cursor-pointer group shadow-zen"
+                onClick={() => setLightboxIndex(idx)}
+              >
+                <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+              </div>
+            ))}
+          </div>
+        ) : validImages.length === 3 ? (
+          // 3 images — 1 large left + 2 stacked right
+          <div className="grid grid-cols-2 gap-3">
+            <div
+              className="relative h-80 rounded-2xl overflow-hidden cursor-pointer group shadow-zen-lg row-span-2"
+              onClick={() => setLightboxIndex(0)}
+            >
+              <img src={firstImg} alt="Gallery 1" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+            </div>
+            {restImgs.map((img, idx) => (
+              <div
+                key={idx}
+                className="relative h-[calc(50%-6px)] rounded-2xl overflow-hidden cursor-pointer group shadow-zen"
+                style={{ height: "154px" }}
+                onClick={() => setLightboxIndex(idx + 1)}
+              >
+                <img src={img} alt={`Gallery ${idx + 2}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          // 4+ images — 1 large hero + responsive grid below
+          <div className="space-y-3">
+            {/* Hero image */}
+            <div
+              className="relative h-72 md:h-96 rounded-2xl overflow-hidden cursor-pointer group shadow-zen-lg"
+              onClick={() => setLightboxIndex(0)}
+            >
+              <img src={firstImg} alt="Gallery 1" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-end p-4">
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white font-body text-sm bg-black/40 px-3 py-1 rounded-full">
+                  📷 {validImages.length} photos
+                </span>
+              </div>
+            </div>
+
+            {/* Grid of remaining images */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              {restImgs.map((img, idx) => {
+                const isLast = idx === restImgs.length - 1 && validImages.length > 5;
+                const remaining = validImages.length - 5;
+                return (
+                  <div
+                    key={idx}
+                    className={`relative rounded-xl overflow-hidden cursor-pointer group shadow-zen ${
+                      idx >= 3 ? "hidden sm:block" : ""
+                    }`}
+                    style={{ height: "90px" }}
+                    onClick={() => setLightboxIndex(idx + 1)}
+                  >
+                    <img src={img} alt={`Gallery ${idx + 2}`} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" loading="lazy" />
+                    {/* "More" overlay on last visible tile */}
+                    {isLast && remaining > 0 && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="text-white font-display font-bold text-lg">+{remaining}</span>
+                      </div>
+                    )}
+                    {!isLast && (
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={validImages}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
+    </>
+  );
+};
+
+// ── Main Component ──────────────────────────────────────────────────────────
 const TripDetails = () => {
   const { slug } = useParams();
   const trip = trips.find((t) => t.slug === slug);
 
   const [activePackageIdx, setActivePackageIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
-
-  // Tracks COLLAPSED days per package key (all open by default)
   const [collapsedMap, setCollapsedMap] = useState<Record<string, number[]>>({});
 
   if (!trip) {
@@ -174,7 +393,7 @@ const TripDetails = () => {
         {/* ── PACKAGE BODY ── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* ── LEFT: Details ── */}
+          {/* LEFT: Details */}
           <div className="lg:col-span-2 space-y-8">
 
             {/* Overview */}
@@ -190,113 +409,55 @@ const TripDetails = () => {
               </div>
             </div>
 
-            {/* ══════════════════════════════════════
-                ITINERARY — PREMIUM REDESIGN
-            ══════════════════════════════════════ */}
+            {/* ITINERARY */}
             <div className="bg-card rounded-2xl p-6 shadow-zen">
-
-              {/* Section header */}
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-11 h-11 rounded-xl bg-zen-gradient flex items-center justify-center flex-shrink-0 shadow-zen">
                   <Calendar className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h2 className="font-display text-xl font-bold text-foreground">Day-by-Day Itinerary</h2>
-                  <p className="font-body text-xs text-muted-foreground mt-0.5">
-                    All days expanded · Click any day to collapse
-                  </p>
+                  <p className="font-body text-xs text-muted-foreground mt-0.5">All days expanded · Click any day to collapse</p>
                 </div>
               </div>
 
-              {/* Timeline */}
               <div className="relative">
-                {/* Vertical connecting line */}
                 <div
                   className="absolute top-0 bottom-0 w-0.5"
-                  style={{
-                    left: "2.25rem",
-                    background: "linear-gradient(to bottom, #0f766e, #0f766e44, transparent)",
-                  }}
+                  style={{ left: "2.25rem", background: "linear-gradient(to bottom, #0f766e, #0f766e44, transparent)" }}
                 />
-
                 <div className="space-y-5">
                   {pkg.itinerary.map((item, idx) => {
                     const open = isDayOpen(idx);
-                    const dayNum = idx + 1;
-
                     return (
                       <div key={idx} className="relative" style={{ paddingLeft: "5.5rem" }}>
-
-                        {/* ── Calendar Badge ── */}
                         <div className="absolute left-0 top-0" style={{ width: "4.5rem" }}>
                           <div className="rounded-xl overflow-hidden border-2 border-primary/40 shadow-md bg-card">
-                            {/* Top teal bar */}
-                            <div
-                              className="flex items-center justify-center gap-1 py-1.5"
-                              style={{ background: "linear-gradient(135deg, #0f766e, #0d9488)" }}
-                            >
+                            <div className="flex items-center justify-center gap-1 py-1.5" style={{ background: "linear-gradient(135deg, #0f766e, #0d9488)" }}>
                               <Calendar className="w-3 h-3 text-white" />
                               <span className="text-white text-[9px] font-bold uppercase tracking-widest">Day</span>
                             </div>
-                            {/* Large day number */}
                             <div className="flex items-center justify-center py-2 bg-white dark:bg-card">
-                              <span
-                                className="font-display font-black text-primary"
-                                style={{ fontSize: "1.75rem", lineHeight: 1 }}
-                              >
-                                {dayNum}
-                              </span>
+                              <span className="font-display font-black text-primary" style={{ fontSize: "1.75rem", lineHeight: 1 }}>{idx + 1}</span>
                             </div>
                           </div>
                         </div>
 
-                        {/* ── Day Card ── */}
-                        <div
-                          className={`rounded-xl border-2 overflow-hidden transition-all duration-300 ${
-                            open
-                              ? "border-primary/25 shadow-[0_4px_20px_rgba(15,118,110,0.12)]"
-                              : "border-border shadow-sm"
-                          }`}
-                        >
-                          {/* Card Header */}
+                        <div className={`rounded-xl border-2 overflow-hidden transition-all duration-300 ${open ? "border-primary/25 shadow-[0_4px_20px_rgba(15,118,110,0.12)]" : "border-border shadow-sm"}`}>
                           <button
                             onClick={() => toggleDay(idx)}
-                            className={`w-full flex items-start justify-between px-5 py-4 text-left transition-colors gap-3 ${
-                              open
-                                ? "bg-primary/5"
-                                : "bg-muted/20 hover:bg-muted/40"
-                            }`}
+                            className={`w-full flex items-start justify-between px-5 py-4 text-left transition-colors gap-3 ${open ? "bg-primary/5" : "bg-muted/20 hover:bg-muted/40"}`}
                           >
-                            <span className="font-display text-base md:text-lg font-bold text-foreground leading-snug flex-1">
-                              {item.day}
-                            </span>
-                            <div
-                              className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-                                open
-                                  ? "bg-primary text-white shadow-md"
-                                  : "bg-muted text-muted-foreground"
-                              }`}
-                            >
-                              {open
-                                ? <ChevronUp className="w-4 h-4" />
-                                : <ChevronDown className="w-4 h-4" />
-                              }
+                            <span className="font-display text-base md:text-lg font-bold text-foreground leading-snug flex-1">{item.day}</span>
+                            <div className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${open ? "bg-primary text-white shadow-md" : "bg-muted text-muted-foreground"}`}>
+                              {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </div>
                           </button>
-
-                          {/* Card Body */}
                           {open && (
                             <div className="px-5 py-5 border-t-2 border-primary/10 bg-gradient-to-br from-white to-primary/3 dark:from-card dark:to-primary/5">
                               <div className="flex gap-4">
-                                {/* Teal accent bar */}
-                                <div
-                                  className="w-1.5 rounded-full flex-shrink-0 self-stretch min-h-[1.5rem]"
-                                  style={{ background: "linear-gradient(to bottom, #0f766e, #14b8a6)" }}
-                                />
-                                {/* Description */}
-                                <p className="font-body text-sm md:text-base text-foreground leading-relaxed">
-                                  {item.detail}
-                                </p>
+                                <div className="w-1.5 rounded-full flex-shrink-0 self-stretch min-h-[1.5rem]" style={{ background: "linear-gradient(to bottom, #0f766e, #14b8a6)" }} />
+                                <p className="font-body text-sm md:text-base text-foreground leading-relaxed">{item.detail}</p>
                               </div>
                             </div>
                           )}
@@ -307,7 +468,6 @@ const TripDetails = () => {
                 </div>
               </div>
             </div>
-            {/* ══ END ITINERARY ══ */}
 
             {/* Inclusions & Exclusions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -338,7 +498,7 @@ const TripDetails = () => {
             </div>
           </div>
 
-          {/* ── RIGHT: Pricing sticky ── */}
+          {/* RIGHT: Pricing sticky */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 space-y-4">
               <div className="bg-card rounded-2xl shadow-zen-lg p-6 border border-border">
@@ -348,17 +508,13 @@ const TripDetails = () => {
 
                 <div className="mb-3 p-3 rounded-lg bg-muted/50">
                   <p className="font-body text-xs text-muted-foreground mb-1">Standard Package</p>
-                  <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">
-                    {pkg.pricing.standard}
-                  </p>
+                  <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">{pkg.pricing.standard}</p>
                 </div>
 
                 {pkg.pricing.deluxe && (
                   <div className="mb-3 p-3 rounded-lg bg-muted/50">
                     <p className="font-body text-xs text-muted-foreground mb-1">Deluxe Package</p>
-                    <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">
-                      {pkg.pricing.deluxe}
-                    </p>
+                    <p className="font-display text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">{pkg.pricing.deluxe}</p>
                   </div>
                 )}
 
@@ -369,10 +525,7 @@ const TripDetails = () => {
                   <p className="font-body text-xs text-muted-foreground mt-1">*For group of 4 pax. Price may vary.</p>
                 </div>
 
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="w-full bg-zen-gradient text-primary-foreground py-3 rounded-xl font-body font-semibold text-sm hover:opacity-90 transition-opacity shadow-zen mb-3"
-                >
+                <button onClick={() => setShowForm(true)} className="w-full bg-zen-gradient text-primary-foreground py-3 rounded-xl font-body font-semibold text-sm hover:opacity-90 transition-opacity shadow-zen mb-3">
                   Book Now
                 </button>
 
@@ -407,6 +560,11 @@ const TripDetails = () => {
           </div>
         </div>
 
+        {/* ── PHOTO GALLERY — only renders if trip has gallery photos ── */}
+        {trip.gallery && trip.gallery.length > 0 && (
+          <PhotoGallery images={trip.gallery} tripTitle={trip.title} />
+        )}
+
         {/* ── SIKKIM TOURIST PLACES (only on sikkim-explorer) ── */}
         {slug === "sikkim-explorer" && (
           <div className="mt-16">
@@ -421,12 +579,7 @@ const TripDetails = () => {
               {sikkimPlaces.map((place) => (
                 <div key={place.region} className="group bg-card rounded-2xl overflow-hidden shadow-zen hover:shadow-zen-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="relative h-44 overflow-hidden">
-                    <img
-                      src={place.image}
-                      alt={place.region}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
+                    <img src={place.image} alt={place.region} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-3 left-4">
                       <span className="text-white font-display text-lg font-bold">{place.emoji} {place.region}</span>

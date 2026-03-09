@@ -40,6 +40,7 @@ export interface Trip {
   image: string;
   description: string;
   packages: TripPackage[];
+  gallery?: string[];
 }
 
 const trips: Trip[] = [
@@ -56,6 +57,18 @@ const trips: Trip[] = [
     rating: 4.9,
     image: gangtok,
     description: "Explore the best of Sikkim — from Gangtok's monasteries and MG Marg to the high-altitude Gurudongmar Lake, Yumthang Valley, and the mystical Silk Route of East Sikkim.",
+
+    // prettier-ignore
+    gallery: [
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053072/sik1_qucbpp.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053073/sik2_ohjyls.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053073/sik3_uosdwg.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032256/mg_pc0hjm.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032257/gangtok_zj18en.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032254/sikkim12_jmk0wn.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032252/gangtok1_jh2qcz.jpg",
+    ],
+
     packages: [
       {
         id: "sikkim-3n4d",
@@ -316,6 +329,22 @@ const trips: Trip[] = [
     rating: 4.8,
     image: rajgar,
     description: "A sacred journey through the most revered Buddhist pilgrimage sites — Nalanda, Rajgir, Bodhgaya and Sarnath — tracing the footsteps of Lord Buddha across Bihar and Varanasi.",
+
+    // prettier-ignore
+    gallery: [
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053650/raj3_fkss8d.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053649/raj2_nhn26b.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053648/raj10_mkaw4j.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053649/raj11_aiyn73.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053648/raj6_wnhycb.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053649/raj1_i92kru.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053648/raj7_ovbvpx.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053648/raj5_xbr03p.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053648/raj4_dvwxes.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053648/raj9_xy6yag.jpg",
+      "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773053647/raj8_tcrgcg.jpg",
+    ],
+
     packages: [{
       id: "buddhist-circuit-5n6d",
       label: "5N / 6D – Full Buddhist Circuit",
@@ -511,7 +540,7 @@ const trips: Trip[] = [
     duration: "5 Nights / 6 Days",
     price: "Rs. 15,000",
     rating: 4.9,
-    image: kashmir, // TODO: Replace with kashmir.jpg from assets
+    image: kashmir,
     description: "Experience the breathtaking beauty of Kashmir — pristine Dal Lake, snow-covered Gulmarg, and the serene meadows of Pahalgam. Heaven on Earth awaits.",
     packages: [
       {
@@ -603,7 +632,7 @@ const trips: Trip[] = [
     duration: "5 Nights / 6 Days",
     price: "Rs. 22,000",
     rating: 4.9,
-    image: bhutan, // TODO: Replace with bhutan.jpg from assets
+    image: bhutan,
     description: "Discover the Last Shangri-La — Bhutan's stunning dzongs, the iconic Tiger's Nest Monastery, pristine river valleys and one of the happiest countries on earth.",
     packages: [
       {
