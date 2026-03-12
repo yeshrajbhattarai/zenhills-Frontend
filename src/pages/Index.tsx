@@ -145,7 +145,13 @@ const Index = () => {
             className="absolute inset-0 transition-opacity duration-700"
             style={{ opacity: idx === currentSlide ? (fading ? 0 : 1) : 0, zIndex: idx === currentSlide ? 1 : 0 }}
           >
-            <img src={slide.image} alt={slide.label} className="w-full h-full object-cover" />
+            <img
+                src={slide.image}
+                alt={slide.label}
+                className="w-full h-full object-cover"
+                fetchPriority={idx === 0 ? "high" : "low"}
+                loading={idx === 0 ? "eager" : "lazy"}
+              />
           </div>
         ))}
 
@@ -284,7 +290,7 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {galleryImages.map((img, index) => (
               <div key={index} className="group relative overflow-hidden rounded-xl">
-                <img src={img.src} alt={img.label} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" />
+                <img src={img.src} alt={img.label} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all duration-300 flex items-end p-4">
                   <span className="translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-body text-sm font-semibold flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5" />{img.label}

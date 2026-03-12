@@ -2,8 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/mountain.svg" />
+
+    <!-- ✅ Canonical - tells Google the REAL url (fixes "Page with redirect" issue) -->
+    <link rel="canonical" href="https://zenhillsjourneys.com/" />
+
+    <link rel="icon" type="image/svg+xml" href="mountain.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ✅ Robots - explicitly tell Google to index this page -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <title>ZenHills Tours & Travel | Explore Sikkim & The Himalayas</title>
 
@@ -11,15 +18,53 @@
 
     <meta name="author" content="ZenHills Tours & Travel" />
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="ZenHills Tours & Travel" />
-    <meta property="og:description" content="Explore Sikkim's mountains, monasteries, and breathtaking landscapes with ZenHills." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og-image.jpg" />
+    <!-- ✅ Keywords (basic but helps) -->
+    <meta name="keywords" content="Sikkim tours, Himalaya travel, ZenHills, Sikkim trekking, Eastern Himalayas, monastery tours, Gangtok tours, mountain holidays" />
 
-    <!-- Twitter -->
+    <!-- ✅ Open Graph - fixed with absolute URLs -->
+    <meta property="og:title" content="ZenHills Tours & Travel | Explore Sikkim & The Himalayas" />
+    <meta property="og:description" content="Explore Sikkim's mountains, monasteries, and breathtaking landscapes with ZenHills Tours & Travel." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://zenhillsjourneys.com/" />
+    <meta property="og:image" content="https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032251/sikkim10_nx2cb1.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="ZenHills Tours & Travel" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ✅ Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/og-image.jpg" />
+    <meta name="twitter:title" content="ZenHills Tours & Travel | Explore Sikkim & The Himalayas" />
+    <meta name="twitter:description" content="Explore Sikkim's mountains, monasteries, and breathtaking landscapes with ZenHills Tours & Travel." />
+    <meta name="twitter:image" content="https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032251/sikkim10_nx2cb1.jpg" />
+
+    <!-- ✅ Schema.org structured data - helps Google understand your business -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "ZenHills Tours & Travel",
+      "url": "https://zenhillsjourneys.com",
+      "logo": "https://zenhillsjourneys.com/mountain.svg",
+      "description": "ZenHills Tours & Travel specializes in curated journeys across Sikkim and the Eastern Himalayas.",
+      "image": "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032251/sikkim10_nx2cb1.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Sikkim",
+        "addressCountry": "IN"
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Sikkim, Eastern Himalayas, India"
+      },
+      "sameAs": []
+    }
+    </script>
+
+    <!-- ✅ Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
   </head>
 
   <body>
