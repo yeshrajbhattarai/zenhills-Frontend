@@ -3,98 +3,98 @@
 
   <!-- Main Pages -->
   <url>
-    <loc>https://www.zenhillsjourneys.com/</loc>
+    <loc>https://zenhillsjourneys.com/</loc>
     <priority>1.0</priority>
     <changefreq>weekly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/trips</loc>
+    <loc>https://zenhillsjourneys.com/trips</loc>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/events</loc>
+    <loc>https://zenhillsjourneys.com/events</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/about</loc>
+    <loc>https://zenhillsjourneys.com/about</loc>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/contact</loc>
+    <loc>https://zenhillsjourneys.com/contact</loc>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <!-- Trip Detail Pages -->
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/sikkim-explorer</loc>
+    <loc>https://zenhillsjourneys.com/detailed/sikkim-explorer</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/darjeeling-retreat</loc>
+    <loc>https://zenhillsjourneys.com/detailed/darjeeling-retreat</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/digha-beach-escape</loc>
+    <loc>https://zenhillsjourneys.com/detailed/digha-beach-escape</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/nepal-heritage-tour</loc>
+    <loc>https://zenhillsjourneys.com/detailed/nepal-heritage-tour</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/rajgir-spiritual-trip</loc>
+    <loc>https://zenhillsjourneys.com/detailed/rajgir-spiritual-trip</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/deoghar-pilgrimage-tour</loc>
+    <loc>https://zenhillsjourneys.com/detailed/deoghar-pilgrimage-tour</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/uttarakhand-hills-journey</loc>
+    <loc>https://zenhillsjourneys.com/detailed/uttarakhand-hills-journey</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/assam-nature-wildlife</loc>
+    <loc>https://zenhillsjourneys.com/detailed/assam-nature-wildlife</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/arunachal-adventure</loc>
+    <loc>https://zenhillsjourneys.com/detailed/arunachal-adventure</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/kashmir-paradise-tour</loc>
+    <loc>https://zenhillsjourneys.com/detailed/kashmir-paradise-tour</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://www.zenhillsjourneys.com/detailed/bhutan-dragon-kingdom</loc>
+    <loc>https://zenhillsjourneys.com/detailed/bhutan-dragon-kingdom</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
   </url>
