@@ -20,7 +20,7 @@ type Trip = (typeof trips)[number];
 /** Pull the cheapest "budget" price string from a trip's packages */
 const getStartingPrice = (trip: Trip): string => {
   const prices = trip.packages
-    .map((p) => p.pricing?.budgetPrice ?? p.pricing?.standardPrice ?? p.pricing?.budget ?? p.pricing?.standard ?? "")
+    .map((p) => p.pricing?.budget ?? p.pricing?.standard ?? "")
     .filter(Boolean);
   return prices[0] ?? "";
 };
