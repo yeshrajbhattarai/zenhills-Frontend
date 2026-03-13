@@ -20,11 +20,14 @@ import sikkim6  from "../assets/Gallery/sikkim6.jpeg";
 import sikkim7  from "../assets/Gallery/sikkim7.jpeg";
 
 const sikkim9  = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032249/sikkim9_ywbdsf.jpg";
-const sikkim8  = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032253/sikkim8_g4gaw6.jpg";
+const sikkim8  = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032254/bhutan_utzame.jpg";
 const sikkim10 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032251/sikkim10_nx2cb1.jpg";
 const sikkim11 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032255/westsikkim_sremzz.jpg";
 const sikkim12 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032254/sikkim12_jmk0wn.jpg";
 const sikkim13 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032261/nepal_wqn54c.jpg";
+const sikkim14 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032257/gangtok_zj18en.jpg";
+const sikkim15 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032245/arunachal_rxw1aj.jpg";
+const sikkim16 = "https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032261/kashmir_yuzxun.jpg";
 
 
 const heroSlides = [
@@ -33,6 +36,10 @@ const heroSlides = [
   { image: sikkim11, label: "North, Sikkim" },
   { image: sikkim9, label: "Himalayan Serenity" },
   { image: sikkim12, label: "North, Sikkim" },
+  { image: sikkim14, label: "Namchi, Sikkim" },
+  { image: sikkim8, label: "Bhutan" },
+  { image: sikkim15, label: "Arunachal" },
+  { image: sikkim16, label: "Kashmir" },
 ];
 
 
