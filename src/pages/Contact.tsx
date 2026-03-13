@@ -1,9 +1,14 @@
-  import { useState } from "react";
+import { useState, useEffect } from "react";
   import Navbar from "../components/Navbar";
   import Footer from "../components/Footer";
   import { Phone, Mail, MapPin, Clock, Send, User } from "lucide-react";
 
   const Contact = () => {
+    useEffect(() => {
+  document.title = "Contact Us | ZenHills Tours & Travel";
+  document.querySelector('meta[name="description"]')
+    ?.setAttribute("content", "Get in touch with ZenHills Tours & Travel. Plan your Sikkim trip, ask questions or request a custom itinerary.");
+}, []);
     const [formData, setFormData] = useState({
       fullname: "",
       email: "",

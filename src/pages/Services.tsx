@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Hotel, Map, Camera, Shield, Headphones, Car, ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 const services = [
   {
@@ -55,6 +56,11 @@ const processSteps = [
 ];
 
 const Services = () => {
+  useEffect(() => {
+  document.title = "Our Services | ZenHills Tours & Travel";
+  document.querySelector('meta[name="description"]')
+    ?.setAttribute("content", "From hotel booking to complete tour packages, transport and 24/7 support — ZenHills handles every aspect of your Sikkim journey.");
+}, []);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

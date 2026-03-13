@@ -314,7 +314,11 @@ const Trips = () => {
 
   const featured = filtered[0];
   const rest     = filtered.slice(1);
-
+    useEffect(() => {
+    document.title = "Our Trip Packages | ZenHills Tours & Travel";
+    document.querySelector('meta[name="description"]')
+      ?.setAttribute("content", "Browse ZenHills curated Sikkim tour packages — North Sikkim, Gangtok, Silk Route, Darjeeling and more.");
+  }, []);
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />

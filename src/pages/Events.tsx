@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+
 import { ArrowRight, Sparkles, Heart, Star, Users, Briefcase, Gift, Camera, Mountain, Sunrise } from "lucide-react";
 
 const events = [
@@ -139,7 +141,11 @@ export default function Events() {
             e.tag.toLowerCase().includes(activeFilter.toLowerCase()) ||
             e.title.toLowerCase().includes(activeFilter.toLowerCase())
         );
-
+        useEffect(() => {
+        document.title = "Special Events & Celebrations | ZenHills Tours & Travel";
+        document.querySelector('meta[name="description"]')
+          ?.setAttribute("content", "Plan your honeymoon, wedding or corporate retreat in the Himalayas with ZenHills Tours & Travel.");
+      }, []);
   return (
     <div className="min-h-screen bg-[#0a0f0d]">
       <Navbar />
@@ -500,6 +506,8 @@ export default function Events() {
           </div>
         </div>
       </section>
+    <Footer/>
+
     </div>
   );
 }

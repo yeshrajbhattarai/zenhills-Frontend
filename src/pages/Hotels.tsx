@@ -2,6 +2,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { MapPin, Star, Phone, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import {useEffect} from "react";
+
 
 const hotels = [
   {
@@ -74,6 +76,11 @@ const categoryColors: Record<string, string> = {
 };
 
 const Hotels = () => {
+  useEffect(() => {
+  document.title = "Hotels in Sikkim | ZenHills Tours & Travel";
+  document.querySelector('meta[name="description"]')
+    ?.setAttribute("content", "Explore our handpicked partner hotels, resorts and homestays across Sikkim — from Gangtok heritage properties to cosy North Sikkim homestays.");
+}, []);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

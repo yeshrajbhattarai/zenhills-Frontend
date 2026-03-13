@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {
@@ -266,7 +266,13 @@ const PhotoGallery = ({ images, tripTitle }: { images: string[]; tripTitle: stri
 const TripDetails = () => {
   const { slug } = useParams();
   const trip = trips.find((t) => t.slug === slug);
-
+  useEffect(() => {
+  if (trip) {
+    document.title = `${trip.title} | ZenHills Tours & Travel`;
+    document.querySelector('meta[name="description"]')
+      ?.setAttribute("content", `Book ${trip.title} with ZenHills. ${trip.location ?? "Sikkim & Himalayas"}.`);
+  }
+}, [trip]);
   const [activePackageIdx, setActivePackageIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [collapsedMap, setCollapsedMap] = useState<Record<string, number[]>>({});

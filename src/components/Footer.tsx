@@ -49,7 +49,7 @@ const Footer = () => {
                 About Us
               </Link>
               <Link
-                to="/services"
+                to="/trips"
                 className="text-sm text-primary-foreground/70 hover:text-accent transition-colors"
               >
                 Our Trips

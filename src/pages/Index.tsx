@@ -112,6 +112,11 @@ function StatItem({ stat }: { stat: typeof stats[0] }) {
 }
 
 const Index = () => {
+  useEffect(() => {
+  document.title = "ZenHills Tours & Travel | Explore Sikkim & The Himalayas";
+  document.querySelector('meta[name="description"]')
+    ?.setAttribute("content", "ZenHills Tours & Travel specializes in curated journeys across Sikkim and the Eastern Himalayas. Discover monasteries, mountain lakes, scenic valleys, and authentic Himalayan culture.");
+}, []);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [fading, setFading] = useState(false);
 

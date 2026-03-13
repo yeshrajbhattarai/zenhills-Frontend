@@ -149,6 +149,12 @@ const FadeSection = ({ children, className = "", delay = 0 }: { children: React.
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 const About = () => {
+  useEffect(() => {
+    document.title = "About Us | ZenHills Tours & Travel";
+    document.querySelector('meta[name="description"]')
+      ?.setAttribute("content", "Learn about ZenHills Tours & Travel — a Sikkim-based travel company crafting authentic Himalayan journeys.");
+  }, []);
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
