@@ -161,7 +161,7 @@ const Index = () => {
                 src={slide.image}
                 alt={slide.label}
                 className="w-full h-full object-cover"
-                fetchPriority={idx === 0 ? "high" : "low"}
+                fetchpriority={idx === 0 ? "high" : "low"}
                 loading={idx === 0 ? "eager" : "lazy"}
               />
           </div>

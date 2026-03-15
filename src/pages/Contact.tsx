@@ -9,6 +9,15 @@ import { useState, useEffect } from "react";
   document.title = "Contact Us | ZenHills Tours & Travel";
   document.querySelector('meta[name="description"]')
     ?.setAttribute("content", "Get in touch with ZenHills Tours & Travel. Plan your Sikkim trip, ask questions or request a custom itinerary.");
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) {
+        canonical.setAttribute("href", "https://zenhillsjourneys.com/contact");
+      } else {
+        canonical = document.createElement("link");
+        canonical.setAttribute("rel", "canonical");
+        canonical.setAttribute("href", "https://zenhillsjourneys.com/contact");
+        document.head.appendChild(canonical);
+      }
 }, []);
     const [formData, setFormData] = useState({
       fullname: "",

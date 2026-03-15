@@ -267,13 +267,23 @@ const PhotoGallery = ({ images, tripTitle }: { images: string[]; tripTitle: stri
 const TripDetails = () => {
   const { slug } = useParams();
   const trip = trips.find((t) => t.slug === slug);
-  useEffect(() => {
-  if (trip) {
-    document.title = `${trip.title} | ZenHills Tours & Travel`;
-    document.querySelector('meta[name="description"]')
-      ?.setAttribute("content", `Book ${trip.title} with ZenHills. ${trip.location ?? "Sikkim & Himalayas"}.`);
-  }
-}, [trip]);
+    useEffect(() => {
+      if (trip) {
+        document.title = `${trip.title} | ZenHills Tours & Travel`;
+        document.querySelector('meta[name="description"]')
+          ?.setAttribute("content", `Book ${trip.title} with ZenHills. ${trip.location ?? "Sikkim & Himalayas"}.`);
+
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) {
+          canonical.setAttribute("href", `https://zenhillsjourneys.com/detailed/${slug}`);
+        } else {
+          canonical = document.createElement("link");
+          canonical.setAttribute("rel", "canonical");
+          canonical.setAttribute("href", `https://zenhillsjourneys.com/detailed/${slug}`);
+          document.head.appendChild(canonical);
+        }
+      }
+    }, [trip, slug]);
   const [activePackageIdx, setActivePackageIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [collapsedMap, setCollapsedMap] = useState<Record<string, number[]>>({});

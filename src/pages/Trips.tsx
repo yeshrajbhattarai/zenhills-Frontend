@@ -77,6 +77,8 @@ const Reveal = ({
   );
 };
 
+
+
 // ─── TRIP CARD (standard grid card) ──────────────────────────────────────────
 
 const TripCard = ({ trip, delay = 0 }: { trip: Trip; delay?: number }) => {
@@ -315,10 +317,20 @@ const Trips = () => {
   const featured = filtered[0];
   const rest     = filtered.slice(1);
     useEffect(() => {
-    document.title = "Our Trip Packages | ZenHills Tours & Travel";
-    document.querySelector('meta[name="description"]')
-      ?.setAttribute("content", "Browse ZenHills curated Sikkim tour packages — North Sikkim, Gangtok, Silk Route, Darjeeling and more.");
-  }, []);
+      document.title = "Our Trip Packages | ZenHills Tours & Travel";
+      document.querySelector('meta[name="description"]')
+        ?.setAttribute("content", "Browse ZenHills curated Sikkim tour packages — North Sikkim, Gangtok, Silk Route, Darjeeling and more.");
+
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) {
+        canonical.setAttribute("href", "https://zenhillsjourneys.com/trips");
+      } else {
+        canonical = document.createElement("link");
+        canonical.setAttribute("rel", "canonical");
+        canonical.setAttribute("href", "https://zenhillsjourneys.com/trips");
+        document.head.appendChild(canonical);
+      }
+    }, []);
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />

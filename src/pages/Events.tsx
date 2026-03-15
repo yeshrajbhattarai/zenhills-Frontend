@@ -145,6 +145,15 @@ export default function Events() {
         document.title = "Special Events & Celebrations | ZenHills Tours & Travel";
         document.querySelector('meta[name="description"]')
           ?.setAttribute("content", "Plan your honeymoon, wedding or corporate retreat in the Himalayas with ZenHills Tours & Travel.");
+            let canonical = document.querySelector('link[rel="canonical"]');
+            if (canonical) {
+              canonical.setAttribute("href", "https://zenhillsjourneys.com/events");
+            } else {
+              canonical = document.createElement("link");
+              canonical.setAttribute("rel", "canonical");
+              canonical.setAttribute("href", "https://zenhillsjourneys.com/events");
+              document.head.appendChild(canonical);
+            }
       }, []);
   return (
     <div className="min-h-screen bg-[#0a0f0d]">

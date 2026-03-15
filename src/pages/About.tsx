@@ -153,6 +153,15 @@ const About = () => {
     document.title = "About Us | ZenHills Tours & Travel";
     document.querySelector('meta[name="description"]')
       ?.setAttribute("content", "Learn about ZenHills Tours & Travel — a Sikkim-based travel company crafting authentic Himalayan journeys.");
+      let canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) {
+    canonical.setAttribute("href", "https://zenhillsjourneys.com/about");
+  } else {
+    canonical = document.createElement("link");
+    canonical.setAttribute("rel", "canonical");
+    canonical.setAttribute("href", "https://zenhillsjourneys.com/about");
+    document.head.appendChild(canonical);
+  }
   }, []);
 
   return (

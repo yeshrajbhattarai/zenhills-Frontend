@@ -7,7 +7,7 @@ import {useEffect} from "react";
 
 const hotels = [
   {
-    name: "The Elgin Nor-Khill",
+    name: "Z Retreat ",
     location: "Gangtok, Sikkim",
     category: "Heritage",
     rating: 4.8,
@@ -17,7 +17,7 @@ const hotels = [
     priceRange: "₹4,500 – ₹8,000 / night",
   },
   {
-    name: "Hotel Sonam Delek",
+    name: "Mansarovar Hotel ",
     location: "Gangtok, Sikkim",
     category: "Standard",
     rating: 4.5,
@@ -27,8 +27,8 @@ const hotels = [
     priceRange: "₹2,500 – ₹4,000 / night",
   },
   {
-    name: "Lachen Alpine Homestay",
-    location: "Lachen, North Sikkim",
+    name: "Mayur Hotel",
+    location: "Gangtok, Sikkim",
     category: "Homestay",
     rating: 4.7,
     image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
@@ -37,7 +37,7 @@ const hotels = [
     priceRange: "₹1,200 – ₹2,000 / night",
   },
   {
-    name: "Lachung Valley Resort",
+    name: "Kyipshong Residency",
     location: "Lachung, North Sikkim",
     category: "Resort",
     rating: 4.6,
@@ -47,8 +47,8 @@ const hotels = [
     priceRange: "₹1,800 – ₹3,500 / night",
   },
   {
-    name: "Zuluk Silk Route Homestay",
-    location: "Zuluk, East Sikkim",
+    name: "Floret hotel",
+    location: "Lachung, North Sikkim",
     category: "Homestay",
     rating: 4.9,
     image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80",
@@ -56,16 +56,16 @@ const hotels = [
     amenities: ["Sunrise View", "Bonfire", "Local Food", "Trekking"],
     priceRange: "₹1,000 – ₹1,800 / night",
   },
-  {
-    name: "Pelling Valley View Hotel",
-    location: "Pelling, West Sikkim",
-    category: "Standard",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&q=80",
-    description: "Located close to Pelling Skywalk with direct views of Kanchenjunga on clear mornings. Great for West Sikkim exploration.",
-    amenities: ["Kanchenjunga View", "Restaurant", "WiFi", "Parking"],
-    priceRange: "₹2,000 – ₹3,500 / night",
-  },
+  // {
+  //   name: "Pelling Valley View Hotel",
+  //   location: "Pelling, West Sikkim",
+  //   category: "Standard",
+  //   rating: 4.5,
+  //   image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&q=80",
+  //   description: "Located close to Pelling Skywalk with direct views of Kanchenjunga on clear mornings. Great for West Sikkim exploration.",
+  //   amenities: ["Kanchenjunga View", "Restaurant", "WiFi", "Parking"],
+  //   priceRange: "₹2,000 – ₹3,500 / night",
+  // },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -114,11 +114,6 @@ const Hotels = () => {
               <div key={hotel.name} className="group bg-card rounded-2xl overflow-hidden shadow-zen hover:shadow-zen-lg transition-all duration-300 hover:-translate-y-1 border border-border/50">
                 <div className="relative h-48 overflow-hidden">
                   <img src={hotel.image} alt={hotel.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                  <div className="absolute top-3 left-3">
-                    <span className={`text-xs font-body font-semibold px-2.5 py-1 rounded-full ${categoryColors[hotel.category]}`}>
-                      {hotel.category}
-                    </span>
-                  </div>
                   <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" /> {hotel.rating}
                   </div>
@@ -135,10 +130,6 @@ const Hotels = () => {
                     ))}
                   </div>
                   <div className="pt-3 border-t border-border flex items-center justify-between">
-                    <div>
-                      <p className="font-body text-xs text-muted-foreground">Starting from</p>
-                      <p className="font-display text-sm font-bold text-primary">{hotel.priceRange}</p>
-                    </div>
                     <a
                       href="https://wa.me/918409970064?text=Hello%20ZenHills,%20I%20would%20like%20to%20enquire%20about%20hotel%20options."
                       target="_blank"
