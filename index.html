@@ -2,26 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
-    <!-- ✅ Canonical - tells Google the REAL url (fixes "Page with redirect" issue) -->
-    <link rel="canonical" href="https://zenhillsjourneys.com/" />
-
     <link rel="icon" type="image/svg+xml" href="mountain.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ✅ Robots - explicitly tell Google to index this page -->
+    <!-- Page canonical and title are set dynamically per route via useEffect -->
+
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <title>ZenHills Tours & Travel | Explore Sikkim & The Himalayas</title>
 
     <meta name="description" content="ZenHills Tours & Travel specializes in curated journeys across Sikkim and the Eastern Himalayas. Discover monasteries, mountain lakes, scenic valleys, and authentic Himalayan culture." />
-
     <meta name="author" content="ZenHills Tours & Travel" />
-
-    <!-- ✅ Keywords (basic but helps) -->
     <meta name="keywords" content="Sikkim tours, Himalaya travel, ZenHills, Sikkim trekking, Eastern Himalayas, monastery tours, Gangtok tours, mountain holidays" />
 
-    <!-- ✅ Open Graph - fixed with absolute URLs -->
+    <!-- Open Graph -->
     <meta property="og:title" content="ZenHills Tours & Travel | Explore Sikkim & The Himalayas" />
     <meta property="og:description" content="Explore Sikkim's mountains, monasteries, and breathtaking landscapes with ZenHills Tours & Travel." />
     <meta property="og:type" content="website" />
@@ -32,13 +26,13 @@
     <meta property="og:site_name" content="ZenHills Tours & Travel" />
     <meta property="og:locale" content="en_US" />
 
-    <!-- ✅ Twitter -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ZenHills Tours & Travel | Explore Sikkim & The Himalayas" />
     <meta name="twitter:description" content="Explore Sikkim's mountains, monasteries, and breathtaking landscapes with ZenHills Tours & Travel." />
     <meta name="twitter:image" content="https://res.cloudinary.com/du2tt2zqw/image/upload/v1773032251/sikkim10_nx2cb1.jpg" />
 
-    <!-- ✅ Schema.org structured data - helps Google understand your business -->
+    <!-- Schema.org structured data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -61,7 +55,7 @@
     }
     </script>
 
-    <!-- ✅ Preconnect for performance -->
+    <!-- Preconnect for Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
