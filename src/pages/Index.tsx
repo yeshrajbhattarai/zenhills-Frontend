@@ -54,9 +54,9 @@ const galleryImages = [
 ];
 
 const stats = [
-  { icon: Users,  value: 100, suffix: "+", label: "Happy Travellers" },
-  { icon: Globe,  value: 10,  suffix: "+", label: "Destinations" },
-  { icon: Award,  value: 1,   suffix: "+", label: "Years Experience" },
+  { icon: Users,  value: 100000, suffix: "+", label: "Happy Travellers" },
+  { icon: Globe,  value: 100,  suffix: "+", label: "Destinations" },
+  { icon: Award,  value: 15,   suffix: "+", label: "Years Experience" },
   { icon: Star,   value: 4.7, suffix: "",  label: "Average Rating", isDecimal: true },
 ];
 
