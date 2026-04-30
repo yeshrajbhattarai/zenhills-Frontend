@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Phone, ChevronDown, Hotel, Home, Info, Briefcase, Headphones, Mail, Sparkles } from "lucide-react";
+import { Menu, X, Phone, ChevronDown, Hotel, Home, Info, Briefcase, Headphones, Mail, Sparkles, Star } from "lucide-react";
 import trips from "../data/trips";
 
 const Navbar = () => {
@@ -89,7 +89,9 @@ const Navbar = () => {
                 <Link to="/events" className={linkClass("/events")}>
                   <Sparkles className="w-3.5 h-3.5" /> Events
                 </Link>
-
+                <Link to="/reviews" className={linkClass("/reviews")}>
+                  <Star className="w-3.5 h-3.5" /> Reviews
+                </Link>
                 {/* Packages Dropdown */}
                 <div className="relative" ref={packagesRef}>
                   <button
@@ -194,6 +196,9 @@ const Navbar = () => {
                 <Link to="/events" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/events") ? "text-primary" : "text-muted-foreground"}`}>
                   <Sparkles className="w-4 h-4" /> Events
                 </Link>
+                <Link to="/reviews" onClick={() => setOpen(false)} className={`flex items-center gap-2 py-2 font-body text-base font-medium hover:text-primary ${isActive("/reviews") ? "text-primary" : "text-muted-foreground"}`}>
+  <Star className="w-4 h-4" /> Reviews
+</Link>
 
                 {/* Mobile Packages */}
                 <div>

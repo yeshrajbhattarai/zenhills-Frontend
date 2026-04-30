@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import DevCard from "../components/DevCard";
 import DevCred from "../components/DeveloperCredit";
+import ReviewsSection from "../components/ReviewsSection";
 
 import trips from "../data/trips";
 
@@ -43,15 +44,7 @@ const heroSlides = [
 ];
 
 
-const galleryImages = [
-  { src: sikkim1, label: "North Sikkim" },
-  { src: sikkim2, label: "Yumthang Valley" },
-  { src: sikkim3, label: "Himalayan Peaks" },
-  { src: sikkim4, label: "Monastery Trail" },
-  { src: sikkim6, label: "Mountain Lakes" },
-  { src: sikkim5, label: "Misty Forests" },
-  { src: sikkim7, label: "Scenic Valleys" },
-];
+
 
 const stats = [
   { icon: Users,  value: 100000, suffix: "+", label: "Happy Travellers" },
@@ -66,20 +59,6 @@ const whyUs = [
   { icon: ShieldCheck,    title: "Transparent Pricing",  desc: "No hidden charges. What we quote is exactly what you pay." },
 ];
 
-const testimonials = [
-  {
-    name: "Priya Sharma", location: "Kolkata", rating: 5, avatar: "PS", trip: "Sikkim Explorer",
-    text: "ZenHills made our Sikkim trip absolutely magical. The itinerary was perfectly paced and our guide was incredibly knowledgeable. Will definitely book again!",
-  },
-  {
-    name: "Rahul Mehta", location: "Patna", rating: 5, avatar: "RM", trip: "9 Days North Sikkim",
-    text: "From Gurudongmar Lake to Yumthang Valley — every single moment was breathtaking. The team handled everything seamlessly. Highly recommended!",
-  },
-  {
-    name: "Anjali & Deepak", location: "Mumbai", rating: 5, avatar: "AD", trip: "Sikkim & Darjeeling Retreat",
-    text: "Our honeymoon trip to Darjeeling and Sikkim was beyond expectations. The hotel picks, the transport, the care — absolutely top class service.",
-  },
-];
 
 function useCountUp(target: number, isDecimal = false, duration = 1800) {
   const [count, setCount] = useState(0);
@@ -291,60 +270,8 @@ const Index = () => {
           </Link>
         </div>
       </section>
-      {/* ── GALLERY ── */}
-      <section className="py-20 md:py-28 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 md:mb-16">
-            <p className="text-sm uppercase tracking-[0.2em] text-primary font-semibold mb-3">Our Gallery</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">Glimpse of Sikkim 💕</h2>
-            <p className="text-muted-foreground mt-4 max-w-lg mx-auto">What are you waiting for? We are ready to welcome you.. 💕</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {galleryImages.map((img, index) => (
-              <div key={index} className="group relative overflow-hidden rounded-xl">
-                <img src={img.src} alt={img.label} className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-all duration-300 flex items-end p-4">
-                  <span className="translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-body text-sm font-semibold flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5" />{img.label}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── TESTIMONIALS ── */}
-      <section className="py-20 md:py-28 px-4 bg-background">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12 md:mb-16">
-            <p className="text-sm uppercase tracking-[0.2em] text-primary font-semibold mb-3">Testimonials</p>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">What Our Travellers Say🗣️</h2>
-            <p className="text-muted-foreground mt-4 max-w-lg mx-auto">Real experiences from real travellers who explored the Himalayas with ZenHills.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <div key={t.name} className="bg-card rounded-2xl p-6 shadow-zen hover:shadow-zen-lg transition-all duration-300 hover:-translate-y-1 flex flex-col">
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="font-body text-sm text-muted-foreground leading-relaxed flex-1 mb-6">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-zen-gradient flex items-center justify-center text-primary-foreground text-xs font-bold flex-shrink-0">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="font-display text-sm font-semibold text-foreground">{t.name}</p>
-                    <p className="font-body text-xs text-muted-foreground">{t.location} · {t.trip}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+ <ReviewsSection />
 
       {/* ── LOCATIONS ── */}
       <section className="py-20 md:py-28 px-4 bg-muted/30">

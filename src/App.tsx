@@ -14,6 +14,7 @@ import TripDetails from "./pages/TripDetails";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminEnquiries from "./pages/AdminEnquiries";
 import Events from "./pages/Events";
+import Reviews from "./pages/Reviews";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/detailed/:slug" element={<TripDetails />} />
           <Route path="/admin" element={<AdminEnquiries />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/reviews" element={<Reviews />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
